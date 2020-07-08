@@ -1,0 +1,52 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.5.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java'
+}
+
+group 'ru.miroha'
+version '1.0'
+
+compileJava {
+    sourceCompatibility = 11
+    targetCompatibility = 11
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.2.5.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.2.5.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:2.2.5.RELEASE'
+
+    //Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+
+    //Telegram Bot API
+    implementation 'org.telegram:telegrambots-spring-boot-starter:4.4.0.2'
+
+    //Other tools
+    implementation 'com.vdurmont:emoji-java:5.1.1'
+    implementation 'org.jsoup:jsoup:1.12.1'
+
+    //Test
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
