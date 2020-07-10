@@ -2,33 +2,34 @@ package ru.miroha.parser.googleplay.connection;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import ru.miroha.parser.googleplay.connection.exception.InvalidGooglePlayLinkException;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import ru.miroha.parser.googleplay.connection.exception.InvalidGooglePlayGameUrlException;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class GooglePlayConnection {
 
-    public static Connection connectToGooglePlay(String URL) throws InvalidGooglePlayLinkException, URISyntaxException {
-        final URI link = new URI(URL);
-        if (GooglePlayCorrectURL.isLinkValid(link)){
-            if (!link.getPath().contains("apps")){
-                throw new InvalidGooglePlayLinkException("Invalid Google Play link");
+    public static Connection connectToGooglePlay(String URL) throws InvalidGooglePlayGameUrlException, MalformedURLException {
+        final java.net.URL url= new URL(URL);
+        if (GooglePlayCorrectURL.isUrlValid(url)) {
+            if (!url.getPath().contains("apps")) {
+                throw new InvalidGooglePlayGameUrlException("Wrong Google Play category");
             }
             URL = forceToRusLocalization(URL);
             return Jsoup.connect(URL);
         }
         else {
-            throw new InvalidGooglePlayLinkException("Invalid Google Play link");
+            throw new InvalidGooglePlayGameUrlException("Not Google Play URL");
         }
     }
 
     private static String forceToRusLocalization(String URL) {
-        if (URL.endsWith("&hl=ru")){
+        if (URL.endsWith("&hl=ru")) {
             return URL;
         }
         else {
-            if (URL.contains("&hl=")){
+            if (URL.contains("&hl=")) {
                 URL = URL.replace(
                         URL.substring(
                                 URL.length()-"&hl=ru".length()), "&hl=ru");
@@ -40,7 +41,7 @@ public class GooglePlayConnection {
         return URL;
     }
 
-    private static class GooglePlayCorrectURL {
+    static class GooglePlayCorrectURL {
 
         private static final String VALID_HOST = "play.google.com";
 
@@ -48,31 +49,33 @@ public class GooglePlayConnection {
 
         private static final int VALID_PORT = -1;
 
-        private static boolean isLinkValid(URI link) {
-            return (isHostValid(link) && isProtocolValid(link) && isPortValid(link));
+        private static boolean isUrlValid(URL url) {
+            return (isHostValid(url) && isProtocolValid(url) && isPortValid(url));
         }
 
-        private static boolean isProtocolValid(URI link) {
-            if (link.getScheme() != null) {
-                return link.getScheme().equals(VALID_PROTOCOL);
+        private static boolean isProtocolValid(URL url) {
+            if (url.getProtocol() != null) {
+                return url.getProtocol().equals(VALID_PROTOCOL);
             }
             else {
                 return false;
             }
         }
 
-        private static boolean isHostValid(URI link) {
-            if (link.getHost() != null) {
-                return link.getHost().equals(VALID_HOST);
+        private static boolean isHostValid(URL url) {
+            if (url.getHost() != null) {
+                return url.getHost().equals(VALID_HOST);
             }
             else {
                 return false;
             }
         }
 
-        private static boolean isPortValid(URI link) {
-            return link.getPort() == VALID_PORT;
+        private static boolean isPortValid(URL url) {
+            return url.getPort() == VALID_PORT;
         }
+
     }
+
 }
 

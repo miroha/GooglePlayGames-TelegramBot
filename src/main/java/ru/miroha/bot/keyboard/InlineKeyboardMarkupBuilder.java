@@ -10,7 +10,7 @@ import java.util.List;
 
 import static java.lang.Math.toIntExact;
 
-public class InlineKeyboardMarkupBuilder {
+public class InlineKeyboardMarkupBuilder implements KeyboardMarkupBuilder {
 
     private Long chatId;
     private String text;
@@ -19,13 +19,14 @@ public class InlineKeyboardMarkupBuilder {
     private List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
 
     private InlineKeyboardMarkupBuilder() {
-
     }
 
+    @Override
     public void setChatId(Long chatId) {
         this.chatId = chatId;
     }
 
+    @Override
     public InlineKeyboardMarkupBuilder setText(String text) {
         this.text = text;
         return this;
@@ -41,6 +42,7 @@ public class InlineKeyboardMarkupBuilder {
         return builder;
     }
 
+    @Override
     public InlineKeyboardMarkupBuilder row() {
         this.row = new ArrayList<>();
         return this;
@@ -60,12 +62,14 @@ public class InlineKeyboardMarkupBuilder {
         return this;
     }
 
+    @Override
     public InlineKeyboardMarkupBuilder endRow() {
         this.keyboard.add(this.row);
         this.row = null;
         return this;
     }
 
+    @Override
     public SendMessage build() {
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         keyboardMarkup.setKeyboard(keyboard);
@@ -83,4 +87,5 @@ public class InlineKeyboardMarkupBuilder {
                 .setMessageId(toIntExact(messageId))
                 .setReplyMarkup(keyboardMarkup);
     }
+
 }

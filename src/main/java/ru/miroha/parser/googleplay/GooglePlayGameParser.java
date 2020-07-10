@@ -1,13 +1,12 @@
 package ru.miroha.parser.googleplay;
 
 import org.jsoup.nodes.Document;
+
 import org.springframework.stereotype.Component;
+
 import ru.miroha.parser.GameParser;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -16,45 +15,54 @@ import java.util.stream.Collectors;
 public class GooglePlayGameParser implements GameParser {
 
     private static final String CURRENT_VERSION = "div:matchesOwn(^Текущая версия$)";
+
     private static final String LAST_UPDATED = "div:matchesOwn(^Обновлено$)";
+
     private static final String REQUIREMENTS = "div:matchesOwn(^Требуемая версия Android$)";
+
     private static final String CONTACTS = "div:matchesOwn(^Разработчик$)";
+
     private static final String IAP = "div:matchesOwn(^Платный контент$)";
+
     private static final String APK_SIZE = "div:matchesOwn(^Размер$)";
+
     private static final String DEVELOPER = "div:matchesOwn(^Продавец$)";
+
     private static final String DEFAULT_EMAIL_SUPPORT = "https://support.google.com/googleplay/";
+
     private static final String INFO_NOT_AVAILABLE = "Информация не доступна";
 
     @Override
-    public String parseGenre(Document document) {
-        return removeGenreDuplicates(document.getElementsByAttributeValue("itemprop", "genre").text());
+    public String parseGenre(Document htmlDocument) {
+        return removeGenreDuplicates(htmlDocument.getElementsByAttributeValue("itemprop", "genre").text());
     }
 
     @Override
-    public String parseInstallationFileSize(Document document) {
-        return parseIfPresent(APK_SIZE, document);
+    public String parseInstallationFileSize(Document htmlDocument) {
+        return parseIfAttributePresent(APK_SIZE, htmlDocument);
     }
 
     @Override
-    public String parseTitle(Document document) {
-        return document.getElementsByAttributeValue("itemprop", "name").text();
+    public String parseTitle(Document htmlDocument) {
+        return htmlDocument.getElementsByAttributeValue("itemprop", "name").text();
     }
 
     @Override
-    public String parseIAP(Document document) {
-        return isPresent(IAP, document) ?
-                parseByAttribute(IAP, document) : "Отсутствуют";
+    public String parseIAP(Document htmlDocument) {
+        return isAttributePresent(IAP, htmlDocument)
+                ? parseByAttribute(IAP, htmlDocument)
+                : "Отсутствуют";
     }
 
     @Override
-    public String parseDeveloperName(Document document) {
-        return parseIfPresent(DEVELOPER, document);
+    public String parseDeveloperName(Document htmlDocument) {
+        return parseIfAttributePresent(DEVELOPER, htmlDocument);
     }
 
     @Override
-    public String parseContacts(Document document) {
+    public String parseContacts(Document htmlDocument) {
         String email = DEFAULT_EMAIL_SUPPORT;
-        Matcher m = Pattern.compile(EMAIL_REGEX).matcher(parseIfPresent(CONTACTS, document));
+        Matcher m = Pattern.compile(EMAIL_REGEX).matcher(parseIfAttributePresent(CONTACTS, htmlDocument));
         while (m.find()) {
             email = m.group();
         }
@@ -62,54 +70,54 @@ public class GooglePlayGameParser implements GameParser {
     }
 
     @Override
-    public String parsePrice(Document document) {
-        String price = parseMetaTagsWithStream("price", "itemprop", document);
-        return "0".equals(price) ? "Бесплатно" : price;
+    public String parsePrice(Document htmlDocument) {
+        String price = parseByMetaTagWithStream("price", "itemprop", htmlDocument);
+        return "0".equals(price)
+                ? "Бесплатно"
+                : price;
     }
 
     @Override
-    public String parseVersion(Document document) {
-        return parseIfPresent(CURRENT_VERSION, document);
+    public String parseVersion(Document htmlDocument) {
+        return parseIfAttributePresent(CURRENT_VERSION, htmlDocument);
     }
 
     @Override
-    public String parseRequirements(Document document) {
-        return parseIfPresent(REQUIREMENTS, document);
+    public String parseRequirements(Document htmlDocument) {
+        return parseIfAttributePresent(REQUIREMENTS, htmlDocument);
     }
 
     @Override
-    public LocalDate parseDateOfLastUpdate(Document document) {
-        String dateOfLastUpdate = parseIfPresent(LAST_UPDATED, document).replace("г.", "").trim();
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("d MMMM yyyy").withLocale(Locale.forLanguageTag("ru-RU"));
-        return LocalDate.parse(dateOfLastUpdate, format);
+    public String parseDateOfLastUpdate(Document htmlDocument) {
+        return parseIfAttributePresent(LAST_UPDATED, htmlDocument);
     }
 
     @Override
-    public String parseGamePicture(Document document) {
-        return parseMetaTagsWithStream("twitter:image", "name", document);
+    public String parseGamePicture(Document htmlDocument) {
+        return parseByMetaTagWithStream("twitter:image", "name", htmlDocument);
     }
 
     @Override
-    public String parseDescription(Document document) {
-        return parseMetaTagsWithStream("description", "itemprop", document);
+    public String parseDescription(Document htmlDocument) {
+        return parseByMetaTagWithStream("description", "itemprop", htmlDocument);
     }
 
     @Override
-    public String parseRating(Document document) {
-        return document.getElementsByAttributeValueStarting("aria-label", "Средняя оценка").attr("aria-label");
+    public String parseRating(Document htmlDocument) {
+        return htmlDocument.getElementsByAttributeValueStarting("aria-label", "Средняя оценка").attr("aria-label");
 
     }
 
-    private String parseMetaTagsWithStream(String pattern, String attribute, Document document) {
-        return document.getElementsByTag("meta").stream()
+    private String parseByMetaTagWithStream(String pattern, String attribute, Document htmlDocument) {
+        return htmlDocument.getElementsByTag("meta").stream()
                 .filter(tag -> pattern.equals(tag.attr(attribute)))
                 .findFirst()
                 .map(tag -> tag.attr("content"))
                 .orElse(INFO_NOT_AVAILABLE);
     }
 
-    private String parseByAttribute(String pattern, Document document) {
-        return document.select(pattern)
+    private String parseByAttribute(String pattern, Document htmlDocument) {
+        return htmlDocument.select(pattern)
                 .first()
                 .parent()
                 .select("span")
@@ -117,15 +125,14 @@ public class GooglePlayGameParser implements GameParser {
                 .text();
     }
 
-    private boolean isPresent(String pattern, Document document) {
-        return !(document.select(pattern)
-                .text()
-                .isEmpty());
+    private boolean isAttributePresent(String pattern, Document htmlDocument) {
+        return !(htmlDocument.select(pattern).text().isEmpty());
     }
 
-    private String parseIfPresent(String pattern, Document document) {
-        return isPresent(pattern, document) ?
-                parseByAttribute(pattern, document) : INFO_NOT_AVAILABLE;
+    private String parseIfAttributePresent(String pattern, Document htmlDocument) {
+        return isAttributePresent(pattern, htmlDocument)
+                ? parseByAttribute(pattern, htmlDocument)
+                : INFO_NOT_AVAILABLE;
     }
 
     private String removeGenreDuplicates(String genre) {

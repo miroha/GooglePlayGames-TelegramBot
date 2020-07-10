@@ -1,14 +1,13 @@
-package ru.miroha.bot.handler;
+package ru.miroha.bot;
 
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.miroha.bot.BotCondition;
-import ru.miroha.bot.BotConditionContext;
+
+import ru.miroha.bot.handler.BotConditionHandler;
 import ru.miroha.bot.handler.callbackquery.CallbackQueryHandler;
-import ru.miroha.bot.handler.message.TextMessageHandler;
-import ru.miroha.service.EmojiService;
 import ru.miroha.service.ReplyMessageService;
 import ru.miroha.service.TelegramUpdateService;
 
@@ -18,18 +17,22 @@ import java.io.Serializable;
 @Component
 public class UpdateReceiver {
 
-    private final TextMessageHandler textMessageHandler;
+    private final BotConditionHandler botConditionHandler;
+
     private final CallbackQueryHandler callbackQueryHandler;
+
     private final BotConditionContext botConditionContext;
+
     private final ReplyMessageService replyMessageService;
+
     private final TelegramUpdateService updateService;
 
-    public UpdateReceiver(TextMessageHandler textMessageHandler,
+    public UpdateReceiver(BotConditionHandler botConditionHandler,
                           CallbackQueryHandler callbackQueryHandler,
                           BotConditionContext botConditionContext,
                           ReplyMessageService replyMessageService,
                           TelegramUpdateService updateService) {
-        this.textMessageHandler = textMessageHandler;
+        this.botConditionHandler = botConditionHandler;
         this.callbackQueryHandler = callbackQueryHandler;
         this.botConditionContext = botConditionContext;
         this.replyMessageService = replyMessageService;
@@ -37,22 +40,36 @@ public class UpdateReceiver {
     }
 
     public PartialBotApiMethod<? extends Serializable> handleUpdate(Update update) {
-        Long chatId = updateService.getChatId(update);
         if (updateService.hasTextMessage(update)) {
             BotCondition botCondition = defineBotCondition(update);
-            log.info("New message from User: {}; chatId: {};  with text: {}; bot condition is: {}",
-                    updateService.getUserName(update), updateService.getChatId(update), updateService.getInputUserData(update), botCondition);
-            return textMessageHandler.handleTextMessage(update.getMessage(), botCondition);
+            log.info("Message from: {}; " +
+                            "chat id: {};  " +
+                            "text: {}; " +
+                            "bot condition: {}",
+                    updateService.getUserName(update),
+                    updateService.getChatId(update),
+                    updateService.getInputUserData(update),
+                    botCondition);
+
+            return botConditionHandler.handleTextMessageByCondition(update.getMessage(), botCondition);
         }
         else if (updateService.hasCallbackQuery(update)) {
-            log.info("New callbackQuery from User: {} with data: {}; messageId: {}",
-                    updateService.getUserName(update), updateService.getInputUserData(update), updateService.getMessageId(update));
+            log.info("CallbackQuery from: {}; " +
+                            "data: {}; " +
+                            "message id: {}",
+                    updateService.getUserName(update),
+                    updateService.getInputUserData(update),
+                    updateService.getMessageId(update));
+
             return callbackQueryHandler.handleCallbackQuery(update.getCallbackQuery());
         }
         else {
-            log.error("Unsupported request by User: {}; Message type: {}",
-                    updateService.getUserName(update), updateService.getMessageType(update.getMessage()));
-            return replyMessageService.getTextMessage(chatId, "Я могу принимать только текстовые сообщения!" + EmojiService.SAD_FACE);
+            log.error("Unsupported request from: {}; " +
+                            "Message type: {}",
+                    updateService.getUserName(update),
+                    updateService.getMessageType(update.getMessage()));
+
+            return replyMessageService.getTextMessage(updateService.getChatId(update), "Я могу принимать только текстовые сообщения!");
         }
     }
 
@@ -80,4 +97,5 @@ public class UpdateReceiver {
         botConditionContext.setCurrentBotConditionForUserWithId(userId, botCondition);
         return botCondition;
     }
+
 }

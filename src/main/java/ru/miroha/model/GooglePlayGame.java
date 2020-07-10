@@ -1,47 +1,64 @@
 package ru.miroha.model;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
+
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 
 @Document(collection = "googlePlayGames")
 @Component
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(builderClassName = "GooglePlayGameBuilder", toBuilder = true)
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public final class GooglePlayGame implements Serializable {
+
     @Id
-    String id;
+    private String id;
+
     @Indexed(unique = true)
-    String title;
-    String genre;
-    String price;
-    LocalDate dateOfLastUpdate;
-    String apkSize;
-    String currentVersion;
-    String requirements;
-    String iap;
-    String devEmail;
-    String URL;
-    String pictureURL;
-    String averageRating;
-    LocalDate addedToLibrary;
+    private String title;
+
+    private String genre;
+
+    private String price;
+
+    private String lastUpdate;
+
+    private String apkSize;
+
+    private String currentVersion;
+
+    private String requirements;
+
+    private String iap;
+
+    private String devEmail;
+
+    private String URL;
+
+    private String pictureURL;
+
+    private String averageRating;
+
+    private LocalDate addedToLibrary;
 
     @Override
     public String toString(){
         return String.join("\n",
                 "Название игры: " + title
                 , "Жанр: " + genre
-                , "Последнее обновление: " + dateOfLastUpdate
+                , "Последнее обновление: " + lastUpdate
                 , "Текущая версия: " + currentVersion
                 , "Требуемая версия Android: " + requirements
                 , "Размер установочного файла: " + apkSize
@@ -52,4 +69,5 @@ public final class GooglePlayGame implements Serializable {
                 , "Добавлена в библиотеку: " + addedToLibrary
         );
     }
+
 }

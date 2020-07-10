@@ -1,22 +1,23 @@
 package ru.miroha.bot.handler.message;
 
 import lombok.extern.slf4j.Slf4j;
+
 import org.jsoup.HttpStatusException;
+
 import org.springframework.stereotype.Component;
+
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+
 import ru.miroha.bot.BotCondition;
 import ru.miroha.model.GooglePlayGame;
-import ru.miroha.parser.googleplay.connection.exception.InvalidGooglePlayLinkException;
+import ru.miroha.parser.googleplay.connection.exception.InvalidGooglePlayGameUrlException;
 import ru.miroha.repository.GooglePlayGameRepository;
 import ru.miroha.service.GooglePlayGameService;
 import ru.miroha.service.ReplyMessageService;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -24,8 +25,11 @@ import java.util.stream.Stream;
 public class ParserMessageHandler implements MessageHandler {
 
     private final GooglePlayGameService googlePlayGameService;
+
     private final GooglePlayGameRepository googlePlayGameRepository;
+
     private final ReplyMessageService replyMessageService;
+
     private GooglePlayGame googlePlayGame;
 
     public ParserMessageHandler(GooglePlayGameService googlePlayGameService,
@@ -48,20 +52,20 @@ public class ParserMessageHandler implements MessageHandler {
         try {
             googlePlayGame = getGooglePlayGameByURL(URL);
             if (!isGenreValid(googlePlayGame)){
-                throw new InvalidGooglePlayLinkException();
+                throw new InvalidGooglePlayGameUrlException();
             }
         } catch (HttpStatusException e) {
-            log.error("Google Play Store is not available: {}", e.getStatusCode());
+            log.error("Google Play Store isn't available: {}", e.getStatusCode());
             return replyMessageService.getTextMessage(chatId, "Не удаётся получить доступ к магазину Google Play!");
-        } catch (IOException | URISyntaxException e) {
-            log.error("Couldn't parse URL: {}", URL);
+        } catch (IOException e) {
+            log.error("Couldn't parse message to URL: {}", URL);
             return replyMessageService.getTextMessage(chatId, "Не удалось распарсить страницу.");
-        } catch (InvalidGooglePlayLinkException e) {
-            log.error("Invalid link: {}", URL);
-            return replyMessageService.getTextMessage(chatId, "Некорректная ссылка, попробуйте снова.");
+        } catch (InvalidGooglePlayGameUrlException e) {
+            log.error("Invalid URL: {}", URL);
+            return replyMessageService.getTextMessage(chatId, "Некорректный URL-адрес, попробуйте снова.");
         }
         googlePlayGameRepository.save(googlePlayGame);
-        log.info("Game {} added to library", googlePlayGame.getTitle());
+        log.info("Game {} saved to library", googlePlayGame.getTitle());
         return replyMessageService.getTextMessage(chatId, googlePlayGame.toString());
     }
 
@@ -70,14 +74,15 @@ public class ParserMessageHandler implements MessageHandler {
         return botCondition.equals(BotCondition.REQUEST_BY_URL);
     }
 
-    private GooglePlayGame getGooglePlayGameByURL(String URL) throws IOException, InvalidGooglePlayLinkException, URISyntaxException {
+    private GooglePlayGame getGooglePlayGameByURL(String URL) throws IOException, InvalidGooglePlayGameUrlException {
         return googlePlayGameService.getGooglePlayGame(URL);
     }
 
     private boolean isGenreValid (GooglePlayGame game) {
-        Set<String> availableGenres = new HashSet<>(Arrays.asList("Аркады", "Викторины", "Головоломки", "Гонки", "Казино", "Казуальные", "Карточные", "Музыка", "Настольные игры",
-                        "Настольные", "Обучающие", "Приключения", "Ролевые", "Симуляторы", "Словесные игры", "Словесные", "Спортивные игры", "Спортивные", "Стратегии", "Экшен"));
+        var availableGenres = List.of("Аркады", "Викторины", "Головоломки", "Гонки", "Казино", "Казуальные", "Карточные", "Музыка", "Настольные игры", "Настольные",
+                "Обучающие", "Приключения", "Ролевые", "Симуляторы", "Словесные игры", "Словесные", "Спортивные игры", "Спортивные", "Стратегии", "Экшен");
         return Stream.of(game.getGenre().split("\\s+"))
                 .anyMatch(availableGenres::contains);
     }
+
 }

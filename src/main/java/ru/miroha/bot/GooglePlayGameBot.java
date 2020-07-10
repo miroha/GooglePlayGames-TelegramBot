@@ -2,15 +2,16 @@ package ru.miroha.bot;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.miroha.bot.handler.UpdateReceiver;
 
 import java.io.Serializable;
 
@@ -50,4 +51,5 @@ public class GooglePlayGameBot extends TelegramLongPollingBot {
             }
         }
     }
+
 }

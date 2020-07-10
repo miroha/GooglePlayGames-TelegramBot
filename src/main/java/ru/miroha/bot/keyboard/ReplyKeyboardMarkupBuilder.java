@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReplyKeyboardMarkupBuilder {
+public class ReplyKeyboardMarkupBuilder implements KeyboardMarkupBuilder {
 
     private Long chatId;
     private String text;
@@ -15,12 +15,15 @@ public class ReplyKeyboardMarkupBuilder {
     private List<KeyboardRow> keyboard = new ArrayList<>();
     private KeyboardRow row;
 
-    private ReplyKeyboardMarkupBuilder(){}
+    private ReplyKeyboardMarkupBuilder(){
+    }
 
-    private void setChatId(Long chatId) {
+    @Override
+    public void setChatId(Long chatId) {
         this.chatId = chatId;
     }
 
+    @Override
     public ReplyKeyboardMarkupBuilder setText(String text) {
         this.text = text;
         return this;
@@ -36,6 +39,7 @@ public class ReplyKeyboardMarkupBuilder {
         return builder;
     }
 
+    @Override
     public ReplyKeyboardMarkupBuilder row() {
         this.row = new KeyboardRow();
         return this;
@@ -46,12 +50,14 @@ public class ReplyKeyboardMarkupBuilder {
         return this;
     }
 
+    @Override
     public ReplyKeyboardMarkupBuilder endRow() {
         this.keyboard.add(this.row);
         this.row = null;
         return this;
     }
 
+    @Override
     public SendMessage build() {
         SendMessage message = new SendMessage();
         message.setChatId(chatId).setText(text);
@@ -65,4 +71,5 @@ public class ReplyKeyboardMarkupBuilder {
         message.setReplyMarkup(keyboardMarkup);
         return message;
     }
+
 }

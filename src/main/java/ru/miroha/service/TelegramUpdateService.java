@@ -1,6 +1,7 @@
 package ru.miroha.service;
 
 import org.springframework.stereotype.Service;
+
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -8,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.function.Function;
 
 @Service
-public class TelegramUpdateService {
+public class TelegramUpdateService implements UpdateDataExtractor {
 
     public boolean hasTextMessage(Update update) {
         return (update.hasMessage() && update.getMessage().hasText());
@@ -39,6 +40,7 @@ public class TelegramUpdateService {
         }
     }
 
+    @Override
     public Long getChatId(Update update) {
         return getUpdateAttribute(
                 update,
@@ -47,6 +49,7 @@ public class TelegramUpdateService {
         );
     }
 
+    @Override
     public String getUserName(Update update) {
         return getUpdateAttribute(
                 update,
@@ -55,6 +58,7 @@ public class TelegramUpdateService {
         );
     }
 
+    @Override
     public Integer getUserId(Update update) {
         return getUpdateAttribute(
                 update,
@@ -63,6 +67,7 @@ public class TelegramUpdateService {
         );
     }
 
+    @Override
     public String getInputUserData(Update update) {
         return getUpdateAttribute(
                 update,
@@ -71,6 +76,7 @@ public class TelegramUpdateService {
         );
     }
 
+    @Override
     public Integer getMessageId(Update update) {
         return getUpdateAttribute(
                 update,
@@ -106,4 +112,5 @@ public class TelegramUpdateService {
         }
         else return "Unknown type";
     }
+
 }

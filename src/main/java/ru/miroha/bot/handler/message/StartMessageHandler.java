@@ -1,8 +1,10 @@
 package ru.miroha.bot.handler.message;
 
 import org.springframework.stereotype.Component;
+
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+
 import ru.miroha.bot.BotCondition;
 import ru.miroha.bot.keyboard.ReplyKeyboardMarkupBuilder;
 import ru.miroha.service.EmojiService;
@@ -34,8 +36,9 @@ public class StartMessageHandler implements MessageHandler {
 
     private SendMessage getMainMenu(Long chatId) {
         return ReplyKeyboardMarkupBuilder.create(chatId)
-                .setText("Добро пожаловать! " +
-                        "\n\nЧтобы воспользоваться моим функционалом, нажмите нужную кнопку на появившейся клавиатуре. " + EmojiService.POINT_DOWN)
+                .setText("Добро пожаловать! "
+                        + "\n\nЧтобы воспользоваться моим функционалом, нажмите нужную кнопку на появившейся клавиатуре. "
+                        + EmojiService.POINT_DOWN)
                 .row()
                 .button("Поиск по названию")
                 .endRow()
@@ -47,4 +50,5 @@ public class StartMessageHandler implements MessageHandler {
                 .endRow()
                 .build();
     }
+
 }

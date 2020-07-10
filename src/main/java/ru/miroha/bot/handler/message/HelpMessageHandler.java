@@ -1,8 +1,10 @@
 package ru.miroha.bot.handler.message;
 
 import org.springframework.stereotype.Component;
+
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+
 import ru.miroha.bot.BotCondition;
 import ru.miroha.service.ReplyMessageService;
 
@@ -16,7 +18,7 @@ public class HelpMessageHandler implements MessageHandler {
     }
 
     @Override
-    public SendMessage handle(Message message){
+    public SendMessage handle(Message message) {
         Long chatId = message.getChatId();
         return replyMessageService.getTextMessage(chatId,
                 String.join("\n\n"
@@ -24,6 +26,7 @@ public class HelpMessageHandler implements MessageHandler {
                         , "1) Отправляете боту ссылку на игру в магазине Google Play (выберите соответствующий пункт меню)."
                         , "2) По названию игры (выберите соответствующий пункт меню)."
                         , "Второй вариант срабатывает, если указанная игра уже есть в библиотеке бота."
+                        , "Приятного пользования!"
                 ));
     }
 
@@ -31,4 +34,5 @@ public class HelpMessageHandler implements MessageHandler {
     public boolean canHandle(BotCondition botCondition) {
         return botCondition.equals(BotCondition.HELP);
     }
+
 }

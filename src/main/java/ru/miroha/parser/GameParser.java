@@ -2,35 +2,34 @@ package ru.miroha.parser;
 
 import org.jsoup.nodes.Document;
 
-import java.time.LocalDate;
-
 public interface GameParser {
 
     String EMAIL_REGEX = "[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+";
 
-    String parseTitle(Document document);
+    String parseTitle(Document htmlDocument);
 
-    String parseGenre(Document document);
+    String parseGenre(Document htmlDocument);
 
-    String parsePrice(Document document);
+    String parsePrice(Document htmlDocument);
 
-    String parseContacts(Document document);
+    String parseContacts(Document htmlDocument);
 
-    String parseVersion(Document document);
+    String parseVersion(Document htmlDocument);
 
-    String parseRequirements(Document document);
+    String parseRequirements(Document htmlDocument);
 
-    LocalDate parseDateOfLastUpdate(Document document);
+    String parseDateOfLastUpdate(Document htmlDocument);
 
-    String parseIAP(Document document);
+    String parseIAP(Document htmlDocument);
 
-    String parseInstallationFileSize(Document document);
+    String parseInstallationFileSize(Document htmlDocument);
 
-    String parseGamePicture(Document document);
+    String parseGamePicture(Document htmlDocument);
 
-    String parseDescription(Document document);
+    String parseDescription(Document htmlDocument);
 
-    String parseRating(Document document);
+    String parseRating(Document htmlDocument);
 
-    String parseDeveloperName(Document document);
+    String parseDeveloperName(Document htmlDocument);
+
 }

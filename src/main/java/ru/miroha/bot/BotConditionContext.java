@@ -1,6 +1,7 @@
 package ru.miroha.bot;
 
 import lombok.Getter;
+
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -19,5 +20,6 @@ public class BotConditionContext {
     public void setCurrentBotConditionForUserWithId(Integer userId, BotCondition botCondition) {
         usersBotCondition.put(userId, botCondition);
     }
+
 }
 

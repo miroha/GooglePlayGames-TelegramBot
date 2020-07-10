@@ -1,9 +1,12 @@
 package ru.miroha.bot.handler.message;
 
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
+
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+
 import ru.miroha.bot.BotCondition;
 import ru.miroha.bot.keyboard.InlineKeyboardMarkupBuilder;
 import ru.miroha.model.GooglePlayGame;
@@ -16,9 +19,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class LibraryMessageHandler implements  MessageHandler {
+public class LibraryMessageHandler implements MessageHandler {
 
     private final ReplyMessageService replyMessageService;
+
     private final GooglePlayGameRepository googlePlayGameRepository;
 
     public LibraryMessageHandler(ReplyMessageService replyMessageService,
@@ -42,7 +46,7 @@ public class LibraryMessageHandler implements  MessageHandler {
         List<GooglePlayGame> googlePlayGames = googlePlayGameRepository.findByTitleContainsIgnoreCase(gameTitle);
         if (googlePlayGames.size() > 1) {
             log.info("Found matches for \"{}\": {} ", gameTitle, getSimilarGameTitles(googlePlayGames, ", "));
-            return replyMessageService.getTextMessage(chatId, clarifyRequest(googlePlayGames));
+            return replyMessageService.getTextMessage(chatId, specifyRequest(googlePlayGames));
         }
         else if (googlePlayGames.size() == 1) {
             return getInlineKeyboard(chatId, googlePlayGames.get(0));
@@ -53,11 +57,11 @@ public class LibraryMessageHandler implements  MessageHandler {
         }
     }
 
-    private String clarifyRequest(List <GooglePlayGame> games) {
-        return String.join("\n"
-                , "Найденные совпадения:\n"
+    private String specifyRequest(List <GooglePlayGame> games) {
+        return String.join("\n\n"
+                , "Найденные совпадения:"
                 , getSimilarGameTitles(games, "\n")
-                , "\nУточните ваш запрос!");
+                , "Уточните ваш запрос!");
     }
 
     private String getSimilarGameTitles(List <GooglePlayGame> games, String delimiter) {
@@ -70,7 +74,7 @@ public class LibraryMessageHandler implements  MessageHandler {
         String gameTitle = googlePlayGame.getTitle();
         String URL = googlePlayGame.getURL();
         return InlineKeyboardMarkupBuilder.create(chatId)
-                .setText("Вы может узнать следующую информацию об игре " + gameTitle)
+                .setText("Вы можете узнать следующую информацию об игре " + gameTitle)
                 .row()
                 .button("Стоимость " + EmojiService.MONEY, "/price " + gameTitle)
                 .button("Обновлено " + EmojiService.UPDATED, "/updated " + gameTitle)
@@ -115,10 +119,11 @@ public class LibraryMessageHandler implements  MessageHandler {
         }
     }
 
-    private String getNextNumberOfGames(Long amount) {
-        return googlePlayGameRepository.findRandomGames(amount)
+    private String getNextNumberOfGames(Long quantity) {
+        return googlePlayGameRepository.findRandomGames(quantity)
                 .stream()
                 .map(GooglePlayGame::getTitle)
                 .collect(Collectors.joining("\n"));
     }
+
 }
