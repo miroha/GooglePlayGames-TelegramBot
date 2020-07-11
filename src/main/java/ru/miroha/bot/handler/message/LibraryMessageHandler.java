@@ -45,7 +45,6 @@ public class LibraryMessageHandler implements MessageHandler {
         String gameTitle = message.getText();
         List<GooglePlayGame> googlePlayGames = googlePlayGameRepository.findByTitleContainsIgnoreCase(gameTitle);
         if (googlePlayGames.size() > 1) {
-            log.info("Found matches for \"{}\": {} ", gameTitle, getSimilarGameTitles(googlePlayGames, ", "));
             return replyMessageService.getTextMessage(chatId, specifyRequest(googlePlayGames));
         }
         else if (googlePlayGames.size() == 1) {
@@ -60,14 +59,14 @@ public class LibraryMessageHandler implements MessageHandler {
     private String specifyRequest(List <GooglePlayGame> games) {
         return String.join("\n\n"
                 , "Найденные совпадения:"
-                , getSimilarGameTitles(games, "\n")
+                , getSimilarGameTitles(games)
                 , "Уточните ваш запрос!");
     }
 
-    private String getSimilarGameTitles(List <GooglePlayGame> games, String delimiter) {
+    private String getSimilarGameTitles(List <GooglePlayGame> games) {
         return games.stream()
                 .map(GooglePlayGame::getTitle)
-                .collect(Collectors.joining(delimiter));
+                .collect(Collectors.joining("\n"));
     }
 
     private SendMessage getInlineKeyboard(Long chatId, GooglePlayGame googlePlayGame) {

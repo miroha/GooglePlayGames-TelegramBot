@@ -79,10 +79,18 @@ public class ParserMessageHandler implements MessageHandler {
     }
 
     private boolean isGenreValid (GooglePlayGame game) {
-        var availableGenres = List.of("Аркады", "Викторины", "Головоломки", "Гонки", "Казино", "Казуальные", "Карточные", "Музыка", "Настольные игры", "Настольные",
-                "Обучающие", "Приключения", "Ролевые", "Симуляторы", "Словесные игры", "Словесные", "Спортивные игры", "Спортивные", "Стратегии", "Экшен");
+        if (game.getGenre().equals("Музыка и аудио")) {
+            return false;
+        }
+        var correctGenres = List.of(
+                "Аркады", "Викторины", "Головоломки", "Гонки",
+                "Казино", "Казуальные", "Карточные", "Музыка",
+                "Настольные игры", "Настольные", "Обучающие", "Приключения",
+                "Ролевые", "Симуляторы", "Словесные игры", "Словесные",
+                "Спортивные игры", "Спортивные", "Стратегии", "Экшен"
+        );
         return Stream.of(game.getGenre().split("\\s+"))
-                .anyMatch(availableGenres::contains);
+                .anyMatch(correctGenres::contains);
     }
 
 }

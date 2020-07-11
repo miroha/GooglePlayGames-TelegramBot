@@ -140,4 +140,5 @@ public class GooglePlayGameParser implements GameParser {
                 .distinct()
                 .collect(Collectors.joining(" "));
     }
+
 }

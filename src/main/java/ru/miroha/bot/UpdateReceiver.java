@@ -42,32 +42,38 @@ public class UpdateReceiver {
     public PartialBotApiMethod<? extends Serializable> handleUpdate(Update update) {
         if (updateService.hasTextMessage(update)) {
             BotCondition botCondition = defineBotCondition(update);
-            log.info("Message from: {}; " +
-                            "chat id: {};  " +
-                            "text: {}; " +
-                            "bot condition: {}",
+            log.info(
+                    "Message from: {}; " +
+                    "chat id: {};  " +
+                    "text: {}; " +
+                    "bot condition: {}",
                     updateService.getUserName(update),
                     updateService.getChatId(update),
                     updateService.getInputUserData(update),
-                    botCondition);
+                    botCondition
+            );
 
             return botConditionHandler.handleTextMessageByCondition(update.getMessage(), botCondition);
         }
         else if (updateService.hasCallbackQuery(update)) {
-            log.info("CallbackQuery from: {}; " +
-                            "data: {}; " +
-                            "message id: {}",
+            log.info(
+                    "CallbackQuery from: {}; " +
+                    "data: {}; " +
+                    "message id: {}",
                     updateService.getUserName(update),
                     updateService.getInputUserData(update),
-                    updateService.getMessageId(update));
+                    updateService.getMessageId(update)
+            );
 
             return callbackQueryHandler.handleCallbackQuery(update.getCallbackQuery());
         }
         else {
-            log.error("Unsupported request from: {}; " +
-                            "Message type: {}",
+            log.error(
+                    "Unsupported request from: {}; " +
+                    "Message type: {}",
                     updateService.getUserName(update),
-                    updateService.getMessageType(update.getMessage()));
+                    updateService.getMessageType(update.getMessage())
+            );
 
             return replyMessageService.getTextMessage(updateService.getChatId(update), "Я могу принимать только текстовые сообщения!");
         }
