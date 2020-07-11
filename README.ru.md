@@ -1,7 +1,6 @@
 ### Google Play Games Telegram Bot
-![Java](https://img.shields.io/badge/java-11-yellow)
 [![Telegram](https://img.shields.io/badge/telegram-chat-blueviolet)](https://t.me/google_play_games_bot)
-[![Download](https://img.shields.io/badge/download-1.0-blue)](https://github.com/miroha/GooglePlayGames-TelegramBot/releases/tag/1.0)
+[![Download](https://img.shields.io/badge/download-v1.0-blue)](https://github.com/miroha/GooglePlayGames-TelegramBot/releases/tag/1.0)
 [![README_RU](https://img.shields.io/badge/readme-EN-brightgreen)](https://github.com/miroha/GooglePlayGames-TelegramBot/blob/master/README.md)
 #### Возможности бота
 ___
@@ -17,7 +16,7 @@ ___
       - Размер установочного файла (.apk, .obb не учитывается);
       - Системные требования (минимальная версия Android OS);
       - Цена;
-      - Информация о наличии внутриигровых покупках;
+      - Информация о наличии внутриигровых покупок;
       - Почта для связи с разработчиком;
       - Средний рейтинг на основе пользовательских отзывов.
    - Полученная информация от парсера будет отправлена пользователю,
@@ -30,8 +29,8 @@ ___
    на страницу с игрой в магазине Google Play.
    - Поиск по названию не чувствителен к регистру.
    - Если по запросу будет найдено несколько подходящих игр,
-   например, пользователь запросил информацию об игре `Dead`, 
-   то в ответ бот может вернуть несколько подходящих названий, например, `Dead Cells` и `Dead Trigger` и попросит уточнить запрос
+   например, пользователь запросил информацию об игре `Geometry Dash`, 
+   то в ответ бот может вернуть несколько подходящих названий, например, `Geometry Dash World` и `Geometry Dash Meltdown` и попросит уточнить запрос
    до тех пор, пока не будет найдено одно единственное совпадение по названию.
 
 #### Стек используемых технологий
@@ -44,6 +43,19 @@ ___
 - [Jsoup](https://github.com/jhy/jsoup)
 - Logback для логирования
 - Gradle для сборки
+
+#### Создано с помощью Intellij
+___
+<p align="center">
+   <a href="https://www.jetbrains.com/"><img src="https://user-images.githubusercontent.com/14723332/87232472-0439e500-c3c8-11ea-8e21-f81ea3af8b70.png" width="100"></a>
+</p>
+
+#### Демонстрация работы
+___
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/14723332/87232153-807ef900-c3c5-11ea-8fea-87cab00cfe46.png" width="800" height="450">
+</p>
 
 #### Протестировать бота
 ___
