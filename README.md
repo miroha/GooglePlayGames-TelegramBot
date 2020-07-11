@@ -1,46 +1,49 @@
 ### Google Play Games Telegram Bot
-#### Возможности бота
+![Java](https://img.shields.io/badge/java-11-yellow)
+[![Telegram](https://img.shields.io/badge/telegram-chat-blueviolet)](https://t.me/google_play_games_bot)
+[![Download](https://img.shields.io/badge/download-1.0-blue)](https://github.com/miroha/GooglePlayGames-TelegramBot/releases/tag/1.0)
+[![README_RU](https://img.shields.io/badge/readme-RU-brightgreen)](https://github.com/miroha/GooglePlayGames-TelegramBot/blob/master/README.ru.md)
+#### Features
 ___
-`Bot` обеспечивает следующую функциональность:
+`Google Play Games Telegram Bot` provides the following features:
 
-- Режим "Парсер"
-   - Поддерживаются только Google Play (и только раздел [игр](https://play.google.com/store/apps/category/GAME)) ссылки.
-   - Распарсена будет следующая информация об игре:
-      - Название;
-      - Категория;
-      - Текущая версия;
-      - Дата последнего обновления;
-      - Размер установочного файла (.apk, .obb не учитывается);
-      - Системные требования (минимальная версия Android OS);
-      - Цена;
-      - Информация о наличии внутриигровых покупках;
-      - Почта для связи с разработчиком;
-      - Средний рейтинг на основе пользовательских отзывов.
-   - Полученная информация от парсера будет отправлена пользователю,
-   который её запрашивал, а также будет сохранена во внутреннюю библиотеку бота
-   (если такой игры ещё там нет) для дальнейшего использования в режиме "Библиотека". 
+- Mode "Parser"
+   - Supports only Google Play (and only [Games](https://play.google.com/store/apps/category/GAME)) URLs.
+   - The following game information will be crawled:
+      - Title;
+      - Genre;
+      - Current version;
+      - Date of last update;
+      - Installation file size (only .apk without.obb part);
+      - System Requirements (minimum Android OS);
+      - Price (for paid games);
+      - Availability of in-app purchases;
+      - Developer contacts;
+      - Average rating based on user reviews.
+   - Received information will be sent to user who requested it. 
+   Also, this information will be saved into the external database (if there is no such game yet) 
+   to further use in the 'Library' mode.
    
-- Режим "Библиотека"
-   - Предоставляет информацию об игре по её названию (если такая есть в библиотеке бота) в виде интерактивной клавиатуры
-   с возможностью выбора интересующей информации, а также поддержкой перехода непосредственно
-   на страницу с игрой в магазине Google Play.
-   - Поиск по названию не чувствителен к регистру.
-   - Если по запросу будет найдено несколько подходящих игр,
-   например, пользователь запросил информацию об игре `Dead`, 
-   то в ответ бот может вернуть несколько подходящих названий, например, `Dead Cells` и `Dead Trigger` и попросит уточнить запрос
-   до тех пор, пока не будет найдено одно единственное совпадение по названию.
+- Mode "Library"
+   - Provides information about the game by title (if exists in the external library) 
+   via an interactive keyboard with ability to select certain info. 
+   Also, there is a feature of following links directly to the page with the game in Google Play store.
+   - Case-insensitive search.
+   - If upon request several suitable games will be found, for example, 
+   the user requests information about the game with title `Geometry Dash`, then bot can return similar titles in response, 
+   for example, `Geometry Dash World` and `Geometry Dash Meltdown` and will ask to specify the title until one single match will be found.
 
-#### Стек используемых технологий
+#### Technology stack
 ___
 - Java 11
 - [Telegram Bot API](https://github.com/rubenlagus/TelegramBots)
 - Spring Boot
-- MongoDB (Spring Data)
+- MongoDB (via Spring Data)
 - [Project Lombok](https://projectlombok.org/)
 - [Jsoup](https://github.com/jhy/jsoup)
-- Logback для логирования
-- Gradle для сборки
+- Logback - logger
+- Gradle - build tool
 
-#### Протестировать бота
+#### Try now
 ___
-Бот доступен в Telegram: [@google_play_games_bot](https://t.me/google_play_games_bot)
+Talk to bot in Telegram: [@google_play_games_bot](https://t.me/google_play_games_bot)
