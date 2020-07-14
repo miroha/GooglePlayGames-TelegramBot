@@ -43,7 +43,7 @@ public class LibraryMessageHandler implements MessageHandler {
             return replyMessageService.getTextMessage(chatId, replyByDefault());
         }
         String title = message.getText();
-        List<GooglePlayGame> googlePlayGames = googlePlayGameService.getGamesByTitle(title);
+        List<GooglePlayGame> googlePlayGames = googlePlayGameService.getGamesWithSimilarTitle(title);
         if (googlePlayGames.size() > 1) {
             return replyMessageService.getTextMessage(chatId, specifyRequest(googlePlayGames));
         }
@@ -56,14 +56,14 @@ public class LibraryMessageHandler implements MessageHandler {
         }
     }
 
-    private String specifyRequest(List <GooglePlayGame> games) {
+    private String specifyRequest(List<GooglePlayGame> games) {
         return String.join("\n\n"
                 , "Найденные совпадения:"
                 , getSimilarGameTitles(games)
                 , "Уточните ваш запрос!");
     }
 
-    private String getSimilarGameTitles(List <GooglePlayGame> games) {
+    private String getSimilarGameTitles(List<GooglePlayGame> games) {
         return games.stream()
                 .map(GooglePlayGame::getTitle)
                 .collect(Collectors.joining("\n"));

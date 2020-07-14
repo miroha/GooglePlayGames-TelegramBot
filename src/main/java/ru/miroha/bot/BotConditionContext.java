@@ -11,7 +11,7 @@ import java.util.Map;
 public class BotConditionContext implements UserBotCondition {
 
     @Getter
-    private Map<Integer, BotCondition> usersBotCondition = new HashMap<>();
+    private final Map<Integer, BotCondition> usersBotCondition = new HashMap<>();
 
     @Override
     public BotCondition getCurrentBotConditionForUserById(Integer userId) {

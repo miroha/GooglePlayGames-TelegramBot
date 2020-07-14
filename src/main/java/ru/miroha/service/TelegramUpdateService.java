@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.function.Function;
 
 @Service
-public class TelegramUpdateService implements UpdateDataExtractor {
+public class TelegramUpdateService implements TelegramUpdateExtractor {
 
     public boolean hasTextMessage(Update update) {
         return (update.hasMessage() && update.getMessage().hasText());
@@ -36,7 +36,7 @@ public class TelegramUpdateService implements UpdateDataExtractor {
             return messageFunc.apply(update.getMessage());
         }
         else {
-            return null;
+            throw new IllegalArgumentException("Invalid update type");
         }
     }
 

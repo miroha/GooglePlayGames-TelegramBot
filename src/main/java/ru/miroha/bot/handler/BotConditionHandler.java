@@ -23,7 +23,7 @@ public class BotConditionHandler {
         return messageHandlers.stream()
                 .filter(h -> h.canHandle(botCondition))
                 .findAny()
-                .orElseThrow(IllegalArgumentException::new)
+                .orElseThrow(()-> new IllegalArgumentException("Invalid bot condition: " + botCondition))
                 .handle(message);
     }
 

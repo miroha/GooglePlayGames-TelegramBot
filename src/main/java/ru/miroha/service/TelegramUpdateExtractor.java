@@ -2,7 +2,7 @@ package ru.miroha.service;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public interface UpdateDataExtractor {
+public interface TelegramUpdateExtractor {
 
     Long getChatId(Update update);
 

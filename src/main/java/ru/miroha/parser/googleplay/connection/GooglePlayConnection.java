@@ -8,7 +8,7 @@ import ru.miroha.parser.googleplay.connection.exception.InvalidGooglePlayGameUrl
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class GooglePlayConnection {
+public final class GooglePlayConnection {
 
     public static Connection connectToGooglePlay(String URL) throws InvalidGooglePlayGameUrlException, MalformedURLException {
         final java.net.URL url= new URL(URL);

@@ -32,4 +32,6 @@ public interface GameParser {
 
     String parseDeveloperName(Document htmlDocument);
 
+    String parseRecentChanges(Document htmlDocument);
+
 }

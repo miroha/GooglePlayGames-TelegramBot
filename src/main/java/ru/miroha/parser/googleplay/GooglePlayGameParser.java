@@ -1,7 +1,10 @@
 package ru.miroha.parser.googleplay;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import org.jsoup.nodes.Element;
+import org.jsoup.safety.Whitelist;
 import org.springframework.stereotype.Component;
 
 import ru.miroha.parser.GameParser;
@@ -85,6 +88,19 @@ public class GooglePlayGameParser implements GameParser {
     @Override
     public String parseRequirements(Document htmlDocument) {
         return parseIfAttributePresent(REQUIREMENTS, htmlDocument);
+    }
+
+    @Override
+    public String parseRecentChanges(Document htmlDocument) {
+        Element container = htmlDocument.getElementsByAttributeValue("itemprop", "description")
+                .last()
+                .parent()
+                .select("span")
+                .first();
+        container.select("br").append("\\n");
+        container.select("p").prepend("\\n\\n");
+        String recentChanges = container.html().replaceAll("\\\\n", "\n");
+        return Jsoup.clean(recentChanges, "", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
     }
 
     @Override

@@ -33,6 +33,8 @@ public final class GooglePlayGame implements Serializable {
 
     private String lastUpdate;
 
+    private String recentChanges;
+
     private String apkSize;
 
     private String currentVersion;
@@ -65,6 +67,7 @@ public final class GooglePlayGame implements Serializable {
                 , averageRating
                 , "Связаться с разработчиком: " + devEmail
                 , "Добавлена в библиотеку: " + addedToLibrary
+                , "\nЧто нового в последнем обновлении?\n" + recentChanges
         );
     }
 

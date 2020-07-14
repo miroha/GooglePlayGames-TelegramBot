@@ -39,6 +39,7 @@ public class GooglePlayGameService {
                 .genre(gameParser.parseGenre(htmlDocument))
                 .price(gameParser.parsePrice(htmlDocument))
                 .lastUpdate(gameParser.parseDateOfLastUpdate(htmlDocument))
+                .recentChanges(gameParser.parseRecentChanges(htmlDocument))
                 .apkSize(gameParser.parseInstallationFileSize(htmlDocument))
                 .currentVersion(gameParser.parseVersion(htmlDocument))
                 .requirements(gameParser.parseRequirements(htmlDocument))
@@ -71,16 +72,16 @@ public class GooglePlayGameService {
         return googlePlayGameRepository.findByTitle(title);
     }
 
+    public List<GooglePlayGame> getGamesWithSimilarTitle(String title) {
+        return googlePlayGameRepository.findByTitleContainsIgnoreCase(title);
+    }
+
     public Long getNumberOfGamesInLibrary() {
         return googlePlayGameRepository.count();
     }
 
     public List<GooglePlayGame> getRandomGames(Long quantity) {
         return googlePlayGameRepository.findRandomGames(quantity);
-    }
-
-    public List<GooglePlayGame> getGamesByTitle(String title) {
-        return googlePlayGameRepository.findByTitleContainsIgnoreCase(title);
     }
 
 }
