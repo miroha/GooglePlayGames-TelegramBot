@@ -1,11 +1,11 @@
-package ru.miroha.service;
+package ru.miroha.util;
 
 import com.vdurmont.emoji.EmojiParser;
 
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public enum EmojiService {
+public enum Emoji {
 
     MONEY(EmojiParser.parseToUnicode(":dollar:")),
     IAP(EmojiParser.parseToUnicode(":shopping_bags:")),

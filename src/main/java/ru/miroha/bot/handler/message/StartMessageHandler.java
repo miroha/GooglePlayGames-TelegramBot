@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import ru.miroha.bot.BotCondition;
 import ru.miroha.bot.keyboard.ReplyKeyboardMarkupBuilder;
-import ru.miroha.service.EmojiService;
+import ru.miroha.util.Emoji;
 import ru.miroha.service.ReplyMessageService;
 
 @Component
@@ -30,7 +30,7 @@ public class StartMessageHandler implements MessageHandler {
             return getMainMenu(message.getChatId());
         }
         else {
-            return replyMessageService.getTextMessage(message.getChatId(), "Такой команды я не знаю " + EmojiService.EYES);
+            return replyMessageService.getTextMessage(message.getChatId(), "Такой команды я не знаю " + Emoji.EYES);
         }
     }
 
@@ -38,7 +38,7 @@ public class StartMessageHandler implements MessageHandler {
         return ReplyKeyboardMarkupBuilder.create(chatId)
                 .setText("Добро пожаловать! "
                         + "\n\nЧтобы воспользоваться моим функционалом, нажмите нужную кнопку на появившейся клавиатуре. "
-                        + EmojiService.POINT_DOWN)
+                        + Emoji.POINT_DOWN)
                 .row()
                 .button("Поиск по названию")
                 .endRow()

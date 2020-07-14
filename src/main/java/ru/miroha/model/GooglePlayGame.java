@@ -3,7 +3,6 @@ package ru.miroha.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.stereotype.Component;
 
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 @Document(collection = "googlePlayGames")
-@Component
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderClassName = "GooglePlayGameBuilder", toBuilder = true)

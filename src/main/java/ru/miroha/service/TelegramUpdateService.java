@@ -36,7 +36,7 @@ public class TelegramUpdateService implements UpdateDataExtractor {
             return messageFunc.apply(update.getMessage());
         }
         else {
-            throw new IllegalArgumentException("Unsupported user request");
+            return null;
         }
     }
 

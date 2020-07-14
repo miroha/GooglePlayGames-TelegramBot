@@ -11,9 +11,9 @@ import java.util.List;
 @Repository
 public interface GooglePlayGameRepository extends MongoRepository<GooglePlayGame, String> {
 
-    GooglePlayGame findByTitleIgnoreCase(String gameTitle);
+    GooglePlayGame findByTitle(String title);
 
-    List<GooglePlayGame> findByTitleContainsIgnoreCase(String gameTitle);
+    List<GooglePlayGame> findByTitleContainsIgnoreCase(String title);
 
     @Aggregation("{$sample: {size: ?0} }")
     List<GooglePlayGame> findRandomGames(Long quantity);

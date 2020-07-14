@@ -10,8 +10,8 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.miroha.bot.BotCondition;
 import ru.miroha.bot.keyboard.InlineKeyboardMarkupBuilder;
 import ru.miroha.model.GooglePlayGame;
-import ru.miroha.repository.GooglePlayGameRepository;
-import ru.miroha.service.EmojiService;
+import ru.miroha.service.GooglePlayGameService;
+import ru.miroha.util.Emoji;
 import ru.miroha.service.ReplyMessageService;
 
 import java.util.List;
@@ -23,12 +23,12 @@ public class LibraryMessageHandler implements MessageHandler {
 
     private final ReplyMessageService replyMessageService;
 
-    private final GooglePlayGameRepository googlePlayGameRepository;
+    private final GooglePlayGameService googlePlayGameService;
 
     public LibraryMessageHandler(ReplyMessageService replyMessageService,
-                                 GooglePlayGameRepository googlePlayGameRepository) {
+                                 GooglePlayGameService googlePlayGameService) {
         this.replyMessageService = replyMessageService;
-        this.googlePlayGameRepository = googlePlayGameRepository;
+        this.googlePlayGameService = googlePlayGameService;
     }
 
     @Override
@@ -40,10 +40,10 @@ public class LibraryMessageHandler implements MessageHandler {
     public SendMessage handle(Message message) {
         Long chatId = message.getChatId();
         if (message.getText().equals("Поиск по названию")) {
-            return replyMessageService.getTextMessage(chatId, defaultReply());
+            return replyMessageService.getTextMessage(chatId, replyByDefault());
         }
-        String gameTitle = message.getText();
-        List<GooglePlayGame> googlePlayGames = googlePlayGameRepository.findByTitleContainsIgnoreCase(gameTitle);
+        String title = message.getText();
+        List<GooglePlayGame> googlePlayGames = googlePlayGameService.getGamesByTitle(title);
         if (googlePlayGames.size() > 1) {
             return replyMessageService.getTextMessage(chatId, specifyRequest(googlePlayGames));
         }
@@ -51,7 +51,7 @@ public class LibraryMessageHandler implements MessageHandler {
             return getInlineKeyboard(chatId, googlePlayGames.get(0));
         }
         else {
-            log.error("Game {} doesn't exist in library", gameTitle);
+            log.error("Game {} doesn't exist in library", title);
             return replyMessageService.getTextMessage(chatId, "Такой игры в библиотеке нет!");
         }
     }
@@ -75,20 +75,20 @@ public class LibraryMessageHandler implements MessageHandler {
         return InlineKeyboardMarkupBuilder.create(chatId)
                 .setText("Вы можете узнать следующую информацию об игре " + gameTitle)
                 .row()
-                .button("Стоимость " + EmojiService.MONEY, "/price " + gameTitle)
-                .button("Обновлено " + EmojiService.UPDATED, "/updated " + gameTitle)
-                .button("Версия " + EmojiService.VERSION, "/version " + gameTitle)
+                .button("Стоимость " + Emoji.MONEY, "/price " + gameTitle)
+                .button("Обновлено " + Emoji.UPDATED, "/updated " + gameTitle)
+                .button("Версия " + Emoji.VERSION, "/version " + gameTitle)
                 .endRow()
                 .row()
-                .button("Требования " + EmojiService.REQUIREMENTS, "/requirements " + gameTitle)
-                .button("Покупки " + EmojiService.IAP, "/iap " + gameTitle)
-                .button("Размер " + EmojiService.SIZE, "/size " + gameTitle)
+                .button("Требования " + Emoji.REQUIREMENTS, "/requirements " + gameTitle)
+                .button("Покупки " + Emoji.IAP, "/iap " + gameTitle)
+                .button("Размер " + Emoji.SIZE, "/size " + gameTitle)
                 .endRow()
                 .row()
-                .button("Получить всю информацию об игре " + EmojiService.ALL, "/all " + gameTitle)
+                .button("Получить всю информацию об игре " + Emoji.ALL, "/all " + gameTitle)
                 .endRow()
                 .row()
-                .buttonWithURL("Перейти в Google Play " + EmojiService.URL, URL)
+                .buttonWithURL("Перейти в Google Play " + Emoji.URL, URL)
                 .endRow()
                 .row()
                 .button("Скрыть клавиатуру", "/close")
@@ -96,30 +96,26 @@ public class LibraryMessageHandler implements MessageHandler {
                 .build();
     }
 
-    private String defaultReply() {
+    private String replyByDefault() {
         return String.join("\n\n"
                 , "Введите название игры, например: LIMBO"
-                , "Количество игр в библиотеке: " + getNumberOfGamesInLibrary()
+                , "Количество игр в библиотеке: " + googlePlayGameService.getNumberOfGamesInLibrary()
                 , "Случайные игры из библиотеки:"
-                , getRandomGames());
+                , getRandomGameTitles());
     }
 
-    private Long getNumberOfGamesInLibrary() {
-        return googlePlayGameRepository.count();
-    }
-
-    private String getRandomGames() {
-        Long quantityOfGames = getNumberOfGamesInLibrary();
-        if (quantityOfGames < 10) {
-            return getNextNumberOfGames(quantityOfGames);
+    private String getRandomGameTitles() {
+        Long numberOfGames = googlePlayGameService.getNumberOfGamesInLibrary();
+        if (numberOfGames < 10) {
+            return getNextNumberOfGameTitles(numberOfGames);
         }
         else {
-            return getNextNumberOfGames(10L);
+            return getNextNumberOfGameTitles(10L);
         }
     }
 
-    private String getNextNumberOfGames(Long quantity) {
-        return googlePlayGameRepository.findRandomGames(quantity)
+    private String getNextNumberOfGameTitles(Long quantity) {
+        return googlePlayGameService.getRandomGames(quantity)
                 .stream()
                 .map(GooglePlayGame::getTitle)
                 .collect(Collectors.joining("\n"));

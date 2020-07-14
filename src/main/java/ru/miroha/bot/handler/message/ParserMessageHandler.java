@@ -12,7 +12,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.miroha.bot.BotCondition;
 import ru.miroha.model.GooglePlayGame;
 import ru.miroha.parser.googleplay.connection.exception.InvalidGooglePlayGameUrlException;
-import ru.miroha.repository.GooglePlayGameRepository;
 import ru.miroha.service.GooglePlayGameService;
 import ru.miroha.service.ReplyMessageService;
 
@@ -26,31 +25,24 @@ public class ParserMessageHandler implements MessageHandler {
 
     private final GooglePlayGameService googlePlayGameService;
 
-    private final GooglePlayGameRepository googlePlayGameRepository;
-
     private final ReplyMessageService replyMessageService;
 
-    private GooglePlayGame googlePlayGame;
-
     public ParserMessageHandler(GooglePlayGameService googlePlayGameService,
-                                GooglePlayGameRepository googlePlayGameRepository,
-                                ReplyMessageService replyMessageService,
-                                GooglePlayGame googlePlayGame) {
+                                ReplyMessageService replyMessageService) {
         this.googlePlayGameService = googlePlayGameService;
-        this.googlePlayGameRepository = googlePlayGameRepository;
         this.replyMessageService = replyMessageService;
-        this.googlePlayGame = googlePlayGame;
     }
 
     @Override
     public SendMessage handle(Message message) {
+        Long chatId = message.getChatId();
+        GooglePlayGame googlePlayGame;
         if (message.getText().equals("Поиск по ссылке")) {
-            return replyMessageService.getTextMessage(message.getChatId(), "Введите ссылку на любую игру в странице магазина Google Play.");
+            return replyMessageService.getTextMessage(chatId, "Введите ссылку на любую игру в странице магазина Google Play.");
         }
         String URL = message.getText();
-        Long chatId = message.getChatId();
         try {
-            googlePlayGame = getGooglePlayGameByURL(URL);
+            googlePlayGame = googlePlayGameService.getGameByUrl(URL);
             if (!isGenreValid(googlePlayGame)){
                 throw new InvalidGooglePlayGameUrlException();
             }
@@ -64,7 +56,7 @@ public class ParserMessageHandler implements MessageHandler {
             log.error("Invalid URL: {}", URL);
             return replyMessageService.getTextMessage(chatId, "Некорректный URL-адрес, попробуйте снова.");
         }
-        googlePlayGameRepository.save(googlePlayGame);
+        googlePlayGameService.saveGame(googlePlayGame);
         log.info("Game {} saved to library", googlePlayGame.getTitle());
         return replyMessageService.getTextMessage(chatId, googlePlayGame.toString());
     }
@@ -74,10 +66,9 @@ public class ParserMessageHandler implements MessageHandler {
         return botCondition.equals(BotCondition.REQUEST_BY_URL);
     }
 
-    private GooglePlayGame getGooglePlayGameByURL(String URL) throws IOException, InvalidGooglePlayGameUrlException {
-        return googlePlayGameService.getGooglePlayGame(URL);
-    }
-
+    /*
+    Don't let to parse information about applications
+     */
     private boolean isGenreValid (GooglePlayGame game) {
         if (game.getGenre().equals("Музыка и аудио")) {
             return false;

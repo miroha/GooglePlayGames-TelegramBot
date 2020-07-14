@@ -6,8 +6,8 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import ru.miroha.model.GooglePlayGame;
-import ru.miroha.repository.GooglePlayGameRepository;
-import ru.miroha.service.EmojiService;
+import ru.miroha.service.GooglePlayGameService;
+import ru.miroha.util.Emoji;
 import ru.miroha.service.ReplyMessageService;
 
 import java.io.Serializable;
@@ -15,13 +15,13 @@ import java.io.Serializable;
 @Component
 public class GameInfoQueryHandler implements CallbackQueryHandler {
 
-    private final GooglePlayGameRepository googlePlayGameRepository;
+    private final GooglePlayGameService googlePlayGameService;
 
     private final ReplyMessageService replyMessageService;
 
-    public GameInfoQueryHandler(GooglePlayGameRepository googlePlayGameRepository,
+    public GameInfoQueryHandler(GooglePlayGameService googlePlayGameService,
                                 ReplyMessageService replyMessageService) {
-        this.googlePlayGameRepository = googlePlayGameRepository;
+        this.googlePlayGameService = googlePlayGameService;
         this.replyMessageService = replyMessageService;
     }
 
@@ -32,8 +32,8 @@ public class GameInfoQueryHandler implements CallbackQueryHandler {
         Integer messageId = callbackQuery.getMessage().getMessageId();
         Long chatId = callbackQuery.getMessage().getChatId();
 
-        String gameTitle = callBackData.substring(callBackData.indexOf(' ') + 1);
-        GooglePlayGame game = googlePlayGameRepository.findByTitleIgnoreCase(gameTitle);
+        String title = callBackData.substring(callBackData.indexOf(' ') + 1);
+        GooglePlayGame game = googlePlayGameService.getGameByTitle(title);
 
         switch (callBackData.split("\\s+")[0]) {
             case "/price":
@@ -49,7 +49,7 @@ public class GameInfoQueryHandler implements CallbackQueryHandler {
             case "/size":
                 return replyMessageService.getPopUpAnswer(callBackId, game.getApkSize());
             case "/close":
-                return replyMessageService.getEditedTextMessage(chatId, messageId, EmojiService.HIDE.toString());
+                return replyMessageService.getEditedTextMessage(chatId, messageId, Emoji.HIDE.toString());
             case "/all":
                 return replyMessageService.getMessageWithPicture(chatId, game);
             default:
