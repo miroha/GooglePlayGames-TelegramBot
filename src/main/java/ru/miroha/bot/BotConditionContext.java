@@ -1,17 +1,24 @@
 package ru.miroha.bot;
 
-import lombok.Getter;
-
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Implementation of {@link UserBotCondition} that saves and extracts bot conditions to/from {@link HashMap}.
+ *
+ * @author Pavel Mironov
+ * @version 1.0
+ */
 @Component
 public class BotConditionContext implements UserBotCondition {
 
-    @Getter
     private final Map<Integer, BotCondition> usersBotCondition = new HashMap<>();
+
+    public Map<Integer, BotCondition> getUsersBotCondition() {
+        return usersBotCondition;
+    }
 
     @Override
     public BotCondition getCurrentBotConditionForUserById(Integer userId) {

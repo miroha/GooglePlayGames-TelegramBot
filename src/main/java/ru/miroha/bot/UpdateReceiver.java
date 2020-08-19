@@ -8,11 +8,17 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import ru.miroha.bot.handler.BotConditionHandler;
 import ru.miroha.bot.handler.callbackquery.CallbackQueryHandler;
-import ru.miroha.service.ReplyMessageService;
-import ru.miroha.service.TelegramUpdateService;
+import ru.miroha.service.telegram.ReplyMessageService;
+import ru.miroha.service.telegram.TelegramUpdateService;
 
 import java.io.Serializable;
 
+/**
+ * Main {@link Update} handler.
+ *
+ * @author Pavel Mironov
+ * @version 1.0
+ */
 @Slf4j
 @Component
 public class UpdateReceiver {
@@ -39,9 +45,12 @@ public class UpdateReceiver {
         this.updateService = updateService;
     }
 
+    /**
+     * Distributes incoming {@link Update} by its type and returns prepared response to user from specific handlers to main executable method.
+     */
     public PartialBotApiMethod<? extends Serializable> handleUpdate(Update update) {
         if (updateService.hasTextMessage(update)) {
-            BotCondition botCondition = defineBotCondition(update);
+            BotCondition botCondition = getBotCondition(update);
             log.info(
                     "Message from: {}; " +
                     "chat id: {};  " +
@@ -79,7 +88,10 @@ public class UpdateReceiver {
         }
     }
 
-    private BotCondition defineBotCondition(Update update) {
+    /**
+     * Defines current bot condition by user message to handle updates further in specific handlers.
+     */
+    private BotCondition getBotCondition(Update update) {
         Integer userId = updateService.getUserId(update);
         String userTextMessage = updateService.getInputUserData(update);
         BotCondition botCondition;

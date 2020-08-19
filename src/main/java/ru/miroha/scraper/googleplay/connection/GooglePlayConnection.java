@@ -1,15 +1,24 @@
-package ru.miroha.parser.googleplay.connection;
+package ru.miroha.scraper.googleplay.connection;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 
-import ru.miroha.parser.googleplay.connection.exception.InvalidGooglePlayGameUrlException;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * Provides the connection to <a href="https://play.google.com/store/apps">Google Play.</a>
+ *
+ * @author Pavel Mironov
+ * @version 1.0
+ */
 public final class GooglePlayConnection {
 
+    /**
+     * Tries to connect to provided URL.
+     * Uses localized version of URL that retrieves from {@link #forceToRusLocalization(String)}.
+     * Also checks if URL applies to APPS category to prevent from parsing books/music/movies.
+     */
     public static Connection connectToGooglePlay(String URL) throws InvalidGooglePlayGameUrlException, MalformedURLException {
         final java.net.URL url= new URL(URL);
         if (GooglePlayCorrectURL.isUrlValid(url)) {
@@ -24,6 +33,9 @@ public final class GooglePlayConnection {
         }
     }
 
+    /**
+     * Gets localized version of provided URL.
+     */
     private static String forceToRusLocalization(String URL) {
         if (URL.endsWith("&hl=ru")) {
             return URL;
@@ -41,7 +53,10 @@ public final class GooglePlayConnection {
         return URL;
     }
 
-    static class GooglePlayCorrectURL {
+    /**
+     * Checks if provided URL applies to Google Play by host, protocol and port.
+     */
+    private static class GooglePlayCorrectURL {
 
         private static final String VALID_HOST = "play.google.com";
 

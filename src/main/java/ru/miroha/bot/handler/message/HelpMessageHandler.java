@@ -6,8 +6,16 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import ru.miroha.bot.BotCondition;
-import ru.miroha.service.ReplyMessageService;
+import ru.miroha.service.telegram.ReplyMessageService;
 
+/**
+ * Handles {@link Message} when {@link BotCondition} is {@code HELP}.
+ *
+ * Informs how the bot works.
+ *
+ * @author Pavel Mironov
+ * @version 1.0
+ */
 @Component
 public class HelpMessageHandler implements MessageHandler {
 

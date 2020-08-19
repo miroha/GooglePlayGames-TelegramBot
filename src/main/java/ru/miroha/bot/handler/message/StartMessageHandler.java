@@ -8,8 +8,16 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.miroha.bot.BotCondition;
 import ru.miroha.bot.keyboard.ReplyKeyboardMarkupBuilder;
 import ru.miroha.util.Emoji;
-import ru.miroha.service.ReplyMessageService;
+import ru.miroha.service.telegram.ReplyMessageService;
 
+/**
+ * Handles {@link Message} when {@link BotCondition} is {@code MAIN_MENU}.
+ *
+ * Sends reply keyboard with main menu to interact.
+ *
+ * @author Pavel Mironov
+ * @version 1.0
+ */
 @Component
 public class StartMessageHandler implements MessageHandler {
 
@@ -38,7 +46,7 @@ public class StartMessageHandler implements MessageHandler {
         return ReplyKeyboardMarkupBuilder.create(chatId)
                 .setText("Добро пожаловать! "
                         + "\n\nЧтобы воспользоваться моим функционалом, нажмите нужную кнопку на появившейся клавиатуре. "
-                        + Emoji.POINT_DOWN)
+                        + Emoji.MENU)
                 .row()
                 .button("Поиск по названию")
                 .endRow()

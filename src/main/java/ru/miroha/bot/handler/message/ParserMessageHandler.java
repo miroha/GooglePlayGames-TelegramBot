@@ -11,24 +11,36 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import ru.miroha.bot.BotCondition;
 import ru.miroha.model.GooglePlayGame;
-import ru.miroha.parser.googleplay.connection.exception.InvalidGooglePlayGameUrlException;
+import ru.miroha.scraper.googleplay.connection.InvalidGooglePlayGameUrlException;
+import ru.miroha.service.GooglePlayGameScraperService;
 import ru.miroha.service.GooglePlayGameService;
-import ru.miroha.service.ReplyMessageService;
+import ru.miroha.service.telegram.ReplyMessageService;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * Handles {@link Message} when {@link BotCondition} is {@code REQUEST_BY_URL}.
+ * Calls {@link GooglePlayGameScraperService} to get information about the game from its URL.
+ *
+ * @author Pavel Mironov
+ * @version 1.0
+ */
 @Slf4j
 @Component
 public class ParserMessageHandler implements MessageHandler {
+
+    private final GooglePlayGameScraperService scraperService;
 
     private final GooglePlayGameService googlePlayGameService;
 
     private final ReplyMessageService replyMessageService;
 
-    public ParserMessageHandler(GooglePlayGameService googlePlayGameService,
+    public ParserMessageHandler(GooglePlayGameScraperService scraperService,
+                                GooglePlayGameService googlePlayGameService,
                                 ReplyMessageService replyMessageService) {
+        this.scraperService = scraperService;
         this.googlePlayGameService = googlePlayGameService;
         this.replyMessageService = replyMessageService;
     }
@@ -36,14 +48,14 @@ public class ParserMessageHandler implements MessageHandler {
     @Override
     public SendMessage handle(Message message) {
         Long chatId = message.getChatId();
-        GooglePlayGame googlePlayGame;
         if (message.getText().equals("Поиск по ссылке")) {
             return replyMessageService.getTextMessage(chatId, "Введите ссылку на любую игру в странице магазина Google Play.");
         }
         String URL = message.getText();
+        GooglePlayGame googlePlayGame;
         try {
-            googlePlayGame = googlePlayGameService.getGameByUrl(URL);
-            if (!isGenreValid(googlePlayGame)){
+            googlePlayGame = scraperService.getGameByUrl(URL);
+            if (!isGenreValid(googlePlayGame)) {
                 throw new InvalidGooglePlayGameUrlException();
             }
         } catch (HttpStatusException e) {
@@ -56,7 +68,7 @@ public class ParserMessageHandler implements MessageHandler {
             log.error("Invalid URL: {}", URL);
             return replyMessageService.getTextMessage(chatId, "Некорректный URL-адрес, попробуйте снова.");
         }
-        googlePlayGameService.saveGame(googlePlayGame);
+        googlePlayGameService.save(googlePlayGame);
         log.info("Game {} saved to library", googlePlayGame.getTitle());
         return replyMessageService.getTextMessage(chatId, googlePlayGame.toString());
     }
@@ -66,8 +78,8 @@ public class ParserMessageHandler implements MessageHandler {
         return botCondition.equals(BotCondition.REQUEST_BY_URL);
     }
 
-    /*
-    Don't let to parse information about applications
+    /**
+     * Doesn't let to parse information about applications.
      */
     private boolean isGenreValid (GooglePlayGame game) {
         if (game.getGenre().equals("Музыка и аудио")) {

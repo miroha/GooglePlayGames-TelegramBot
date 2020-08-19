@@ -1,4 +1,4 @@
-package ru.miroha.service;
+package ru.miroha.service.telegram;
 
 import org.springframework.stereotype.Service;
 
@@ -9,6 +9,16 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 
 import ru.miroha.model.GooglePlayGame;
 
+/**
+ * Contains various methods for building different type of telegram messages, such as:
+ * text message, pop-up notification, edited text message, text message with image.
+ *
+ * Markdown feature should be disabled to prevent unexpected errors: information about requested game may contains
+ * symbols that probably cannot be parsed. This case can throws {@link org.telegram.telegrambots.meta.exceptions.TelegramApiException}.
+ *
+ * @author Pavel Mironov
+ * @version 1.0
+ */
 @Service
 public class ReplyMessageService {
 
@@ -33,10 +43,10 @@ public class ReplyMessageService {
                 .setText(text);
     }
 
-    public SendPhoto getMessageWithPicture(Long chatId, GooglePlayGame googlePlayGame) {
+    public SendPhoto getMessageWithImage(Long chatId, GooglePlayGame googlePlayGame) {
         return new SendPhoto()
                 .setChatId(chatId)
-                .setPhoto(googlePlayGame.getPictureURL())
+                .setPhoto(googlePlayGame.getImage())
                 .setCaption(googlePlayGame.toString());
     }
 

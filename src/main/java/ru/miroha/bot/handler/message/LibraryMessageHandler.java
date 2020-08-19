@@ -12,11 +12,21 @@ import ru.miroha.bot.keyboard.InlineKeyboardMarkupBuilder;
 import ru.miroha.model.GooglePlayGame;
 import ru.miroha.service.GooglePlayGameService;
 import ru.miroha.util.Emoji;
-import ru.miroha.service.ReplyMessageService;
+import ru.miroha.service.telegram.ReplyMessageService;
+import ru.miroha.bot.handler.callbackquery.CallbackQueryHandler;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Handles {@link Message} when {@link BotCondition} is {@code IN_LIBRARY}.
+ *
+ * Searches requested {@link GooglePlayGame} by title in the database.
+ * If the game was found, returns inline keyboard that contains information about it.
+ *
+ * @author Pavel Mironov
+ * @version 1.0
+ */
 @Slf4j
 @Component
 public class LibraryMessageHandler implements MessageHandler {
@@ -40,14 +50,15 @@ public class LibraryMessageHandler implements MessageHandler {
     public SendMessage handle(Message message) {
         Long chatId = message.getChatId();
         if (message.getText().equals("Поиск по названию")) {
-            return replyMessageService.getTextMessage(chatId, replyByDefault());
+            return replyMessageService.getTextMessage(chatId, defaultReply());
         }
         String title = message.getText();
-        List<GooglePlayGame> googlePlayGames = googlePlayGameService.getGamesWithSimilarTitle(title);
-        if (googlePlayGames.size() > 1) {
-            return replyMessageService.getTextMessage(chatId, specifyRequest(googlePlayGames));
+        List<GooglePlayGame> googlePlayGames = googlePlayGameService.findByTitle(title);
+
+        if (googlePlayGames.size() > 1) {   //<if more than one game with similar title was found
+            return replyMessageService.getTextMessage(chatId, updateRequest(googlePlayGames));
         }
-        else if (googlePlayGames.size() == 1) {
+        else if (googlePlayGames.size() == 1) {   //<BINGO
             return getInlineKeyboard(chatId, googlePlayGames.get(0));
         }
         else {
@@ -56,36 +67,45 @@ public class LibraryMessageHandler implements MessageHandler {
         }
     }
 
-    private String specifyRequest(List<GooglePlayGame> games) {
+    /**
+     * User must clarify his request.
+     */
+    private String updateRequest(List<GooglePlayGame> games) {
         return String.join("\n\n"
                 , "Найденные совпадения:"
-                , getSimilarGameTitles(games)
+                , getSimilarTitles(games)
                 , "Уточните ваш запрос!");
     }
 
-    private String getSimilarGameTitles(List<GooglePlayGame> games) {
+    /**
+     * Found matches by title.
+     */
+    private String getSimilarTitles(List<GooglePlayGame> games) {
         return games.stream()
                 .map(GooglePlayGame::getTitle)
                 .collect(Collectors.joining("\n"));
     }
 
+    /**
+     * Returns inline keyboard with buttons that create callback queries to be processed by {@link CallbackQueryHandler}
+     */
     private SendMessage getInlineKeyboard(Long chatId, GooglePlayGame googlePlayGame) {
         String gameTitle = googlePlayGame.getTitle();
         String URL = googlePlayGame.getURL();
         return InlineKeyboardMarkupBuilder.create(chatId)
                 .setText("Вы можете узнать следующую информацию об игре " + gameTitle)
                 .row()
-                .button("Стоимость " + Emoji.MONEY, "/price " + gameTitle)
-                .button("Обновлено " + Emoji.UPDATED, "/updated " + gameTitle)
-                .button("Версия " + Emoji.VERSION, "/version " + gameTitle)
+                .button("Стоимость " + Emoji.PRICE, "/price " + gameTitle)
+                .button("Обновлено " + Emoji.CALENDAR, "/updated " + gameTitle)
+                .button("Версия " + Emoji.TOOLS, "/version " + gameTitle)
                 .endRow()
                 .row()
                 .button("Требования " + Emoji.REQUIREMENTS, "/requirements " + gameTitle)
-                .button("Покупки " + Emoji.IAP, "/iap " + gameTitle)
+                .button("Покупки " + Emoji.PURCHASES, "/iap " + gameTitle)
                 .button("Размер " + Emoji.SIZE, "/size " + gameTitle)
                 .endRow()
                 .row()
-                .button("Получить всю информацию об игре " + Emoji.ALL, "/all " + gameTitle)
+                .button("Получить всю информацию об игре " + Emoji.GAME, "/all " + gameTitle)
                 .endRow()
                 .row()
                 .buttonWithURL("Перейти в Google Play " + Emoji.URL, URL)
@@ -96,26 +116,16 @@ public class LibraryMessageHandler implements MessageHandler {
                 .build();
     }
 
-    private String replyByDefault() {
+    private String defaultReply() {
         return String.join("\n\n"
                 , "Введите название игры, например: LIMBO"
-                , "Количество игр в библиотеке: " + googlePlayGameService.getNumberOfGamesInLibrary()
+                , "Количество игр в библиотеке: " + googlePlayGameService.getLibrarySize()
                 , "Случайные игры из библиотеки:"
                 , getRandomGameTitles());
     }
 
     private String getRandomGameTitles() {
-        Long numberOfGames = googlePlayGameService.getNumberOfGamesInLibrary();
-        if (numberOfGames < 10) {
-            return getNextNumberOfGameTitles(numberOfGames);
-        }
-        else {
-            return getNextNumberOfGameTitles(10L);
-        }
-    }
-
-    private String getNextNumberOfGameTitles(Long quantity) {
-        return googlePlayGameService.getRandomGames(quantity)
+        return googlePlayGameService.getRandomGames(10L)
                 .stream()
                 .map(GooglePlayGame::getTitle)
                 .collect(Collectors.joining("\n"));

@@ -1,13 +1,25 @@
-package ru.miroha.service;
+package ru.miroha.service.telegram;
 
 import org.springframework.stereotype.Service;
 
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.payments.ShippingQuery;
+
 
 import java.util.function.Function;
 
+/**
+ * Provides various methods to shorten the code and avoid additional verifications every time when you want to know
+ * what kind of {@link Update} came. It's just make it easier to work with Update.
+ *
+ * <b>NOTE!</b>
+ * <p>Supports {@link Message} and {@link CallbackQuery}. Don't use it for {@link ShippingQuery} or another exotic types of {@link Update}.</p>
+ *
+ * @author Pavel Mironov
+ * @version 1.0
+ */
 @Service
 public class TelegramUpdateService implements TelegramUpdateExtractor {
 
@@ -19,24 +31,17 @@ public class TelegramUpdateService implements TelegramUpdateExtractor {
         return (update.hasCallbackQuery());
     }
 
-    public boolean hasMessage(Update update) {
-        return (update.hasMessage());
-    }
-
     private <T> T getUpdateAttribute(Update update,
                                      Function<Message, T> messageFunc,
-                                     Function<CallbackQuery, T> callbackQueryFunc) {
+                                     Function<CallbackQuery, T> callbackQueryFunc)  {
         if (hasTextMessage(update)) {
             return messageFunc.apply(update.getMessage());
         }
         else if (hasCallbackQuery(update)) {
             return callbackQueryFunc.apply(update.getCallbackQuery());
         }
-        else if (hasMessage(update)) {
-            return messageFunc.apply(update.getMessage());
-        }
         else {
-            throw new IllegalArgumentException("Invalid update type");
+            return messageFunc.apply(update.getMessage());
         }
     }
 

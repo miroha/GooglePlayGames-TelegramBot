@@ -8,6 +8,14 @@ import ru.miroha.model.GooglePlayGame;
 
 import java.util.List;
 
+/**
+ * Additional level of abstraction over data access.
+ *
+ * Stores {@link GooglePlayGame} objects to database and manages them.
+ *
+ * @author Pavel Mironov
+ * @version 1.0
+ */
 @Repository
 public interface GooglePlayGameRepository extends MongoRepository<GooglePlayGame, String> {
 
@@ -16,6 +24,6 @@ public interface GooglePlayGameRepository extends MongoRepository<GooglePlayGame
     List<GooglePlayGame> findByTitleContainsIgnoreCase(String title);
 
     @Aggregation("{$sample: {size: ?0} }")
-    List<GooglePlayGame> findRandomGames(Long quantity);
+    List<GooglePlayGame> findRandomGames(Long number);
 
 }

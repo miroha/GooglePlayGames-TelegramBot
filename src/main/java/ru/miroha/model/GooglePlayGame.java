@@ -13,6 +13,13 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+
+/**
+ * Represents game from Google Play Store.
+ *
+ * @author Pavel Mironov
+ * @version 1.0
+ */
 @Document(collection = "googlePlayGames")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -47,7 +54,7 @@ public final class GooglePlayGame implements Serializable {
 
     private String URL;
 
-    private String pictureURL;
+    private String image;
 
     private String averageRating;
 
