@@ -13,7 +13,6 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-
 /**
  * Represents game from Google Play Store.
  *
@@ -50,7 +49,9 @@ public final class GooglePlayGame implements Serializable {
 
     private String iap;
 
-    private String devEmail;
+    private String developerEmail;
+
+    private String developerName;
 
     private String URL;
 
@@ -72,7 +73,8 @@ public final class GooglePlayGame implements Serializable {
                 , "Стоимость игры: " + price
                 , "Внутриигровые покупки: " + iap
                 , averageRating
-                , "Связаться с разработчиком: " + devEmail
+                , "Разработчик: " + developerName
+                , "Связаться с разработчиком: " + developerEmail
                 , "Добавлена в библиотеку: " + addedToLibrary
                 , "\nЧто нового в последнем обновлении?\n" + recentChanges
         );

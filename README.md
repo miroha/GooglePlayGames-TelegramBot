@@ -15,10 +15,11 @@ ___
       - Current version;
       - Date of last update;
       - Installation file size (only .apk without.obb part);
-      - System Requirements (minimum Android OS);
+      - System Requirements (min Android OS);
       - Price (for paid games);
       - Availability of in-app purchases;
-      - Developer contacts;
+      - Developer name and contacts;
+      - Recent changes (what's new in the last update);
       - Average rating based on user reviews.
    - Received information will be sent to user who requested it. 
    Also, this information will be saved into the external database (if there is no such game yet) 
@@ -40,7 +41,7 @@ ___
 - Spring Boot
 - MongoDB (via Spring Data)
 - [Project Lombok](https://projectlombok.org/)
-- [Jsoup](https://github.com/jhy/jsoup)
+- [Jsoup Parser](https://github.com/jhy/jsoup)
 - Logback - logger
 - Gradle - build tool
 

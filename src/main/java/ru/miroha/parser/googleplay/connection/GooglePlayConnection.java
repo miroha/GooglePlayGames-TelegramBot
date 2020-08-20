@@ -1,13 +1,18 @@
-package ru.miroha.scraper.googleplay.connection;
+package ru.miroha.parser.googleplay.connection;
 
+import org.apache.http.client.utils.URIBuilder;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
- * Provides the connection to <a href="https://play.google.com/store/apps">Google Play.</a>
+ * Provides the connection to <a href="https://play.google.com/store/apps">Google Play</a>.
  *
  * @author Pavel Mironov
  * @version 1.0
@@ -15,17 +20,22 @@ import java.net.URL;
 public final class GooglePlayConnection {
 
     /**
+     * Typical base part of URL for all apps.
+     */
+    private static final String BASE_URL = "https://play.google.com/store/apps/details?";
+    
+    /**
      * Tries to connect to provided URL.
-     * Uses localized version of URL that retrieves from {@link #forceToRusLocalization(String)}.
+     * Uses localized version of URL that retrieves from {@link #getLocalized(String, String, String)}.
      * Also checks if URL applies to APPS category to prevent from parsing books/music/movies.
      */
-    public static Connection connectToGooglePlay(String URL) throws InvalidGooglePlayGameUrlException, MalformedURLException {
+    public static Connection connectToGooglePlay(String URL) throws InvalidGooglePlayGameUrlException, MalformedURLException, URISyntaxException {
         final java.net.URL url= new URL(URL);
         if (GooglePlayCorrectURL.isUrlValid(url)) {
             if (!url.getPath().contains("apps")) {
                 throw new InvalidGooglePlayGameUrlException("Wrong Google Play category");
             }
-            URL = forceToRusLocalization(URL);
+            URL = getLocalized(URL, "ru", "RU").toString();
             return Jsoup.connect(URL);
         }
         else {
@@ -36,21 +46,16 @@ public final class GooglePlayConnection {
     /**
      * Gets localized version of provided URL.
      */
-    private static String forceToRusLocalization(String URL) {
-        if (URL.endsWith("&hl=ru")) {
-            return URL;
-        }
-        else {
-            if (URL.contains("&hl=")) {
-                URL = URL.replace(
-                        URL.substring(
-                                URL.length()-"&hl=ru".length()), "&hl=ru");
-            }
-            else {
-                URL += "&hl=ru";
-            }
-        }
-        return URL;
+    private static URL getLocalized(String URL, String language, String country) throws MalformedURLException, URISyntaxException {
+        java.net.URL url = new URL(URL);
+        Map<String, String> params = Arrays.stream(url.getQuery().split("&"))
+                .map(s -> s.split("="))
+                .collect(Collectors.toMap(k -> k[0], v -> v.length > 1 ? v[1] : ""));
+        URIBuilder uriBuilder = new URIBuilder(BASE_URL)
+                .addParameter("id", params.get("id"))
+                .addParameter("hl", language)
+                .addParameter("gl", country);
+        return uriBuilder.build().toURL();
     }
 
     /**

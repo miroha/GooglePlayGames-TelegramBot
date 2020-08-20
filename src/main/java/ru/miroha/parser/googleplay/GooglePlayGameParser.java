@@ -1,4 +1,4 @@
-package ru.miroha.scraper.googleplay;
+package ru.miroha.parser.googleplay;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -8,7 +8,7 @@ import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
-import ru.miroha.scraper.GameScraper;
+import ru.miroha.parser.GameParser;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,16 +16,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * This simple scraper can be used to find and extract data from <a href="https://play.google.com/store/apps/category/GAME">Google Play Games</a>
+ * This simple parser can be used to find and extract data from <a href="https://play.google.com/store/apps/category/GAME">Google Play Games</a>
  * web pages using DOM traversal and CSS selectors.
  *
- * Requires HTML document that can be easily obtained via {@link ru.miroha.scraper.googleplay.connection.GooglePlayConnection}.
+ * Requires HTML document that can be easily obtained via {@link ru.miroha.parser.googleplay.connection.GooglePlayConnection}.
  *
  * @author Pavel Mironov
  * @version 1.0
  */
 @Component
-public class GooglePlayGameScraper implements GameScraper {
+public class GooglePlayGameParser implements GameParser {
 
     private static final String DEFAULT_EMAIL_SUPPORT = "https://support.google.com/googleplay/";
 
@@ -47,7 +47,6 @@ public class GooglePlayGameScraper implements GameScraper {
     private static final String APK_SIZE = "div:matchesOwn(^Размер$)";
 
     private static final String DEVELOPER = "div:matchesOwn(^Продавец$)";
-
 
     @Override
     public String getTitle(Document htmlDocument) {

@@ -1,4 +1,4 @@
-package ru.miroha.scraper;
+package ru.miroha.parser;
 
 import org.jsoup.nodes.Document;
 
@@ -8,7 +8,7 @@ import org.jsoup.nodes.Document;
  * @author Pavel Mironov
  * @version 1.0
  */
-public interface GameScraper {
+public interface GameParser {
 
     String EMAIL_REGEX = "[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+";
 

@@ -1,4 +1,4 @@
-package ru.miroha.scraper.googleplay.connection;
+package ru.miroha.parser.googleplay.connection;
 
 /**
  * Thrown to indicate that a URL doesn't apply to <a href="https://play.google.com/store/apps/category/GAME">Google Play Games</a>

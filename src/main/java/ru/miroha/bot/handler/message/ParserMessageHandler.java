@@ -11,18 +11,19 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import ru.miroha.bot.BotCondition;
 import ru.miroha.model.GooglePlayGame;
-import ru.miroha.scraper.googleplay.connection.InvalidGooglePlayGameUrlException;
-import ru.miroha.service.GooglePlayGameScraperService;
+import ru.miroha.parser.googleplay.connection.InvalidGooglePlayGameUrlException;
+import ru.miroha.service.GooglePlayGameParserService;
 import ru.miroha.service.GooglePlayGameService;
 import ru.miroha.service.telegram.ReplyMessageService;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Stream;
 
 /**
  * Handles {@link Message} when {@link BotCondition} is {@code REQUEST_BY_URL}.
- * Calls {@link GooglePlayGameScraperService} to get information about the game from its URL.
+ * Calls {@link GooglePlayGameParserService} to get information about the game from its URL.
  *
  * @author Pavel Mironov
  * @version 1.0
@@ -31,16 +32,16 @@ import java.util.stream.Stream;
 @Component
 public class ParserMessageHandler implements MessageHandler {
 
-    private final GooglePlayGameScraperService scraperService;
+    private final GooglePlayGameParserService parserService;
 
     private final GooglePlayGameService googlePlayGameService;
 
     private final ReplyMessageService replyMessageService;
 
-    public ParserMessageHandler(GooglePlayGameScraperService scraperService,
+    public ParserMessageHandler(GooglePlayGameParserService parserService,
                                 GooglePlayGameService googlePlayGameService,
                                 ReplyMessageService replyMessageService) {
-        this.scraperService = scraperService;
+        this.parserService = parserService;
         this.googlePlayGameService = googlePlayGameService;
         this.replyMessageService = replyMessageService;
     }
@@ -54,14 +55,14 @@ public class ParserMessageHandler implements MessageHandler {
         String URL = message.getText();
         GooglePlayGame googlePlayGame;
         try {
-            googlePlayGame = scraperService.getGameByUrl(URL);
+            googlePlayGame = parserService.getGameByUrl(URL);
             if (!isGenreValid(googlePlayGame)) {
                 throw new InvalidGooglePlayGameUrlException();
             }
         } catch (HttpStatusException e) {
             log.error("Google Play Store isn't available: {}", e.getStatusCode());
             return replyMessageService.getTextMessage(chatId, "Не удаётся получить доступ к магазину Google Play!");
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             log.error("Couldn't parse message to URL: {}", URL);
             return replyMessageService.getTextMessage(chatId, "Не удалось распарсить страницу.");
         } catch (InvalidGooglePlayGameUrlException e) {

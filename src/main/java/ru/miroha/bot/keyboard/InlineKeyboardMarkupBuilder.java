@@ -22,7 +22,7 @@ public class InlineKeyboardMarkupBuilder implements KeyboardMarkupBuilder {
     private String text;
 
     private List<InlineKeyboardButton> row = null;
-    private List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+    private final List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
 
     private InlineKeyboardMarkupBuilder() {
     }

@@ -18,7 +18,7 @@ public class ReplyKeyboardMarkupBuilder implements KeyboardMarkupBuilder {
     private Long chatId;
     private String text;
 
-    private List<KeyboardRow> keyboard = new ArrayList<>();
+    private final List<KeyboardRow> keyboard = new ArrayList<>();
     private KeyboardRow row;
 
     private ReplyKeyboardMarkupBuilder(){
