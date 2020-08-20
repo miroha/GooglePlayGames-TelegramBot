@@ -72,7 +72,7 @@ public final class GooglePlayGame implements Serializable {
                 , "Размер установочного файла: " + apkSize
                 , "Стоимость игры: " + price
                 , "Внутриигровые покупки: " + iap
-                , averageRating
+                , "Средняя оценка: " + averageRating
                 , "Разработчик: " + developerName
                 , "Связаться с разработчиком: " + developerEmail
                 , "Добавлена в библиотеку: " + addedToLibrary

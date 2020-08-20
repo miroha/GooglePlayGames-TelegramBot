@@ -60,7 +60,7 @@ public class GooglePlayGameParser implements GameParser {
         elementsByAttributeValue.forEach(element -> {
             genres.add(element.text());
         });
-        return String.join(",", genres);
+        return String.join(", ", genres);
     }
 
     @Override

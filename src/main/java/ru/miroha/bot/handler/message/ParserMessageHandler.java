@@ -93,7 +93,7 @@ public class ParserMessageHandler implements MessageHandler {
                 "Ролевые", "Симуляторы", "Словесные игры", "Словесные",
                 "Спортивные игры", "Спортивные", "Стратегии", "Экшен"
         );
-        return Stream.of(game.getGenre().split("\\s+"))
+        return Stream.of(game.getGenre().split(","))
                 .anyMatch(correctGenres::contains);
     }
 
