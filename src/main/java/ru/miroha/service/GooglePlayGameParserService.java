@@ -42,6 +42,7 @@ public class GooglePlayGameParserService {
                 .id(getGameId(URL))
                 .title(parser.getTitle(htmlDocument))
                 .genre(parser.getGenre(htmlDocument))
+                .overview(parser.getOverview(htmlDocument))
                 .price(parser.getPrice(htmlDocument))
                 .lastUpdate(parser.getLastUpdate(htmlDocument))
                 .recentChanges(parser.getRecentChanges(htmlDocument))
@@ -50,10 +51,11 @@ public class GooglePlayGameParserService {
                 .requirements(parser.getRequirements(htmlDocument))
                 .iap(parser.getIAP(htmlDocument))
                 .averageRating(parser.getAverageRating(htmlDocument))
+                .downloads(parser.getDownloads(htmlDocument))
                 .developerName(parser.getDeveloperName(htmlDocument))
                 .developerEmail(parser.getDeveloperContacts(htmlDocument))
                 .addedToLibrary(LocalDate.now())
-                .URL(URL)
+                .url(URL)
                 .image(parser.getImagePreview(htmlDocument))
                 .build();
     }

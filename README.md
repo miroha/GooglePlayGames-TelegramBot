@@ -9,9 +9,10 @@ ___
 
 - Mode "Parser"
    - Supports only Google Play (and only [Games](https://play.google.com/store/apps/category/GAME)) URLs.
-   - The following game information will be crawled:
+   - The following game information will be parsed:
       - Title;
       - Genre;
+      - Overview;
       - Current version;
       - Date of last update;
       - Installation file size (only .apk without.obb part);
@@ -20,6 +21,7 @@ ___
       - Availability of in-app purchases;
       - Developer name and contacts;
       - Recent changes (what's new in the last update);
+      - Installs;
       - Average rating based on user reviews.
    - Received information will be sent to user who requested it. 
    Also, this information will be saved into the external database (if there is no such game yet) 
@@ -33,6 +35,14 @@ ___
    - If upon request several suitable games will be found, for example, 
    the user requests information about the game with title `Geometry Dash`, then bot can return similar titles in response, 
    for example, `Geometry Dash World` and `Geometry Dash Meltdown` and will ask to specify the title until one single match will be found.
+   - Also, allows receiving information about the game by title in JSON.
+
+
+#### Language interface
+
+---
+Now supports only Russian language.
+
 
 #### Technology stack
 ___

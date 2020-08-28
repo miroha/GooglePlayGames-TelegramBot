@@ -20,6 +20,7 @@ public enum Emoji {
     CLOSE(EmojiParser.parseToUnicode(":see_no_evil:")),
     MENU(EmojiParser.parseToUnicode(":point_down:")),
     EYES(EmojiParser.parseToUnicode(":eyes:")),
+    DOCUMENT(EmojiParser.parseToUnicode(":page_facing_up:")),
     URL(EmojiParser.parseToUnicode(":earth_asia:"));
 
     private final String emojiName;

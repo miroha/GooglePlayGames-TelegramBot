@@ -86,7 +86,7 @@ public class ParserMessageHandler implements MessageHandler {
         if (game.getGenre().equals("Музыка и аудио")) {
             return false;
         }
-        var correctGenres = List.of(
+        var validGenres = List.of(
                 "Аркады", "Викторины", "Головоломки", "Гонки",
                 "Казино", "Казуальные", "Карточные", "Музыка",
                 "Настольные игры", "Настольные", "Обучающие", "Приключения",
@@ -94,7 +94,7 @@ public class ParserMessageHandler implements MessageHandler {
                 "Спортивные игры", "Спортивные", "Стратегии", "Экшен"
         );
         return Stream.of(game.getGenre().split(","))
-                .anyMatch(correctGenres::contains);
+                .anyMatch(validGenres::contains);
     }
 
 }

@@ -32,12 +32,14 @@ public interface GameParser {
 
     String getImagePreview(Document htmlDocument);
 
-    String getDescription(Document htmlDocument);
+    String getOverview(Document htmlDocument);
 
     String getAverageRating(Document htmlDocument);
 
     String getDeveloperName(Document htmlDocument);
 
     String getRecentChanges(Document htmlDocument);
+
+    String getDownloads(Document htmlDocument);
 
 }

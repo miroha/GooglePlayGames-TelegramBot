@@ -1,7 +1,6 @@
 package ru.miroha.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -25,44 +24,64 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderClassName = "GooglePlayGameBuilder", toBuilder = true)
-@JsonDeserialize(builder = GooglePlayGame.GooglePlayGameBuilder.class)
 @Getter
 @Setter
 public final class GooglePlayGame implements Serializable {
 
     @Id
+    @JsonProperty("Имя пакета")
     private String id;
 
+    @JsonProperty("Название")
     @Indexed(unique = true)
     private String title;
 
+    @JsonProperty("Жанр")
     private String genre;
 
+    @JsonProperty("Стоимость")
     private String price;
 
+    @JsonProperty("Последнее обновление")
     private String lastUpdate;
 
+    @JsonProperty("Последние изменения")
     private String recentChanges;
 
+    @JsonProperty("Размер установочного файла")
     private String apkSize;
 
+    @JsonProperty("Текущая версия")
     private String currentVersion;
 
+    @JsonProperty("Требования")
     private String requirements;
 
+    @JsonProperty("Внутриигровые покупки")
     private String iap;
 
-    private String developerEmail;
-
+    @JsonProperty("Разработчик")
     private String developerName;
 
-    private String URL;
+    @JsonProperty("Почта разработчика")
+    private String developerEmail;
 
+    @JsonProperty("Ссылка на страницу с игрой")
+    private String url;
+
+    @JsonProperty("Заглавное изображение")
     private String image;
 
+    @JsonProperty("Средний рейтинг")
     private String averageRating;
 
-    @JsonIgnore
+    @JsonProperty("Количество установок")
+    private String downloads;
+
+    @JsonProperty("Описание")
+    private String overview;
+
+    @JsonProperty("Актуальность информации")
     private LocalDate addedToLibrary;
 
     @Override
@@ -77,6 +96,7 @@ public final class GooglePlayGame implements Serializable {
                 , "Стоимость игры: " + price
                 , "Внутриигровые покупки: " + iap
                 , "Средняя оценка: " + averageRating
+                , "Количество установок: " + downloads
                 , "Разработчик: " + developerName
                 , "Связаться с разработчиком: " + developerEmail
                 , "Добавлена в библиотеку: " + addedToLibrary

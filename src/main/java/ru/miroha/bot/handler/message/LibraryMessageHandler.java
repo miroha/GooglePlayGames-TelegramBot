@@ -91,7 +91,7 @@ public class LibraryMessageHandler implements MessageHandler {
      */
     private SendMessage getInlineKeyboard(Long chatId, GooglePlayGame googlePlayGame) {
         String gameTitle = googlePlayGame.getTitle();
-        String URL = googlePlayGame.getURL();
+        String URL = googlePlayGame.getUrl();
         return InlineKeyboardMarkupBuilder.create(chatId)
                 .setText("Вы можете узнать следующую информацию об игре " + gameTitle)
                 .row()
@@ -108,7 +108,7 @@ public class LibraryMessageHandler implements MessageHandler {
                 .button("Получить всю информацию об игре " + Emoji.GAME, "/all " + gameTitle)
                 .endRow()
                 .row()
-                .button("В JSON формате", "/json " + gameTitle)
+                .button("В JSON формате " + Emoji.DOCUMENT, "/json " + gameTitle)
                 .endRow()
                 .row()
                 .buttonWithURL("Перейти в Google Play " + Emoji.URL, URL)

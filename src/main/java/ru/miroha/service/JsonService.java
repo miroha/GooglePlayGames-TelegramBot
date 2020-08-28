@@ -10,6 +10,12 @@ import ru.miroha.model.GooglePlayGame;
 
 import java.io.IOException;
 
+/**
+ * Allows to save {@link GooglePlayGame} to JSON.
+ *
+ * @author Pavel Mironov
+ * @version 1.0
+ */
 @Service
 public class JsonService {
 

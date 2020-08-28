@@ -1,6 +1,5 @@
 package ru.miroha.parser.googleplay;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -48,6 +47,8 @@ public class GooglePlayGameParser implements GameParser {
     private static final String APK_SIZE = "div:matchesOwn(^Размер$)";
 
     private static final String DEVELOPER = "div:matchesOwn(^Продавец$)";
+
+    private static final String INSTALLS = "div:matchesOwn(^Количество установок$)";
 
     @Override
     public String getTitle(Document htmlDocument) {
@@ -108,6 +109,11 @@ public class GooglePlayGameParser implements GameParser {
     }
 
     @Override
+    public String getDownloads(Document htmlDocument) {
+        return getIfAttributePresent(INSTALLS, htmlDocument);
+    }
+
+    @Override
     public String getRequirements(Document htmlDocument) {
         return getIfAttributePresent(REQUIREMENTS, htmlDocument);
     }
@@ -133,7 +139,7 @@ public class GooglePlayGameParser implements GameParser {
     }
 
     @Override
-    public String getDescription(Document htmlDocument) {
+    public String getOverview(Document htmlDocument) {
         return parseByMetaTag("description", "itemprop", htmlDocument);
     }
 
