@@ -1,16 +1,19 @@
 package ru.miroha.bot.handler.callbackquery;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import ru.miroha.model.GooglePlayGame;
 import ru.miroha.service.GooglePlayGameService;
+import ru.miroha.service.JsonService;
 import ru.miroha.util.Emoji;
 import ru.miroha.service.telegram.ReplyMessageService;
 
-import java.io.Serializable;
+import java.io.*;
 
 /**
  * Handles callback queries from a callback buttons in an inline keyboard.
@@ -18,6 +21,7 @@ import java.io.Serializable;
  * @author Pavel Mironov
  * @version 1.0
  */
+@Slf4j
 @Component
 public class CallbackQueryHandler {
 
@@ -25,10 +29,14 @@ public class CallbackQueryHandler {
 
     private final ReplyMessageService replyMessageService;
 
+    private final JsonService jsonService;
+
     public CallbackQueryHandler(GooglePlayGameService googlePlayGameService,
-                                ReplyMessageService replyMessageService) {
+                                ReplyMessageService replyMessageService,
+                                JsonService jsonService) {
         this.googlePlayGameService = googlePlayGameService;
         this.replyMessageService = replyMessageService;
+        this.jsonService = jsonService;
     }
 
     public PartialBotApiMethod<? extends Serializable> handleCallbackQuery(CallbackQuery callbackQuery) {
@@ -57,10 +65,17 @@ public class CallbackQueryHandler {
                 return replyMessageService.getEditedTextMessage(chatId, messageId, Emoji.CLOSE.toString());
             case "/all":
                 return replyMessageService.getMessageWithImage(chatId, game);
+            case "/json":
+                try {
+                    InputStream inputStream = new ByteArrayInputStream(jsonService.toJson(game));
+                    String filename = jsonService.getFileName(game);
+                    return replyMessageService.getMessageWithDocument(chatId, filename, inputStream);
+                } catch (IOException e) {
+                    log.error("Failed attempt to get JSON file: {}", e.toString());
+                }
             default:
                 return replyMessageService.getTextMessage(chatId, "Не удалось получить информацию об игре.");
         }
 
     }
-
 }

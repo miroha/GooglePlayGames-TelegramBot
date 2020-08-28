@@ -29,8 +29,11 @@ public class GooglePlayGameParserService {
 
     private final GooglePlayGameParser parser;
 
-    public GooglePlayGameParserService(GooglePlayGameParser parser) {
+    private final GooglePlayConnection googlePlayConnection;
+
+    public GooglePlayGameParserService(GooglePlayGameParser parser, GooglePlayConnection googlePlayConnection) {
         this.parser = parser;
+        this.googlePlayConnection = googlePlayConnection;
     }
 
     public GooglePlayGame getGameByUrl(String URL) throws InvalidGooglePlayGameUrlException, IOException, URISyntaxException {
@@ -55,13 +58,12 @@ public class GooglePlayGameParserService {
                 .build();
     }
 
-    private Document getHtmlDocument(String URL) throws InvalidGooglePlayGameUrlException, IOException, URISyntaxException {
-        return GooglePlayConnection.connectToGooglePlay(URL).get();
+    public Document getHtmlDocument(String URL) throws InvalidGooglePlayGameUrlException, IOException, URISyntaxException {
+        return googlePlayConnection.connect(URL, "ru", "RU").get();
     }
 
-    private String getGameId(String URL) throws MalformedURLException {
-        var url = new URL(URL);
-        Map<String, String> params = Arrays.stream(url.getQuery().split("&"))
+    public String getGameId(String url) throws MalformedURLException {
+        Map<String, String> params = Arrays.stream(new URL(url).getQuery().split("&"))
                 .map(s -> s.split("="))
                 .collect(Collectors.toMap(k -> k[0], v -> v.length > 1 ? v[1] : ""));
         return params.get("id");

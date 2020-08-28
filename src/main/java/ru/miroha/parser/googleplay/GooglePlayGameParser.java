@@ -1,5 +1,6 @@
 package ru.miroha.parser.googleplay;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -57,9 +58,9 @@ public class GooglePlayGameParser implements GameParser {
     public String getGenre(Document htmlDocument) {
         Set <String> genres = new HashSet<>();
         Elements elementsByAttributeValue = htmlDocument.getElementsByAttributeValue("itemprop", "genre");
-        elementsByAttributeValue.forEach(element -> {
-            genres.add(element.text());
-        });
+        elementsByAttributeValue.forEach(element ->
+            genres.add(element.text())
+        );
         return String.join(", ", genres);
     }
 

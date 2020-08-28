@@ -1,5 +1,7 @@
 package ru.miroha.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -23,6 +25,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderClassName = "GooglePlayGameBuilder", toBuilder = true)
+@JsonDeserialize(builder = GooglePlayGame.GooglePlayGameBuilder.class)
 @Getter
 @Setter
 public final class GooglePlayGame implements Serializable {
@@ -59,6 +62,7 @@ public final class GooglePlayGame implements Serializable {
 
     private String averageRating;
 
+    @JsonIgnore
     private LocalDate addedToLibrary;
 
     @Override
