@@ -20,9 +20,6 @@ import java.util.regex.Pattern;
  * web pages using DOM traversal and CSS selectors.
  *
  * Requires HTML document that can be easily obtained via {@link ru.miroha.parser.googleplay.connection.GooglePlayConnection}.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 @Component
 public class GooglePlayGameParser implements GameParser {

@@ -10,7 +10,6 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 
 import ru.miroha.model.GooglePlayGame;
 
-import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -18,10 +17,7 @@ import java.io.InputStream;
  * text message, pop-up notification, edited text message, text message with image, document.
  *
  * Markdown feature should be disabled to prevent unexpected errors: information about requested game may contains
- * symbols that probably cannot be parsed. This case can throws {@link org.telegram.telegrambots.meta.exceptions.TelegramApiException}.
- *
- * @author Pavel Mironov
- * @version 1.0
+ * symbols that probably cannot be parsed. This case can throws unexpected {@link org.telegram.telegrambots.meta.exceptions.TelegramApiException}.
  */
 @Service
 public class ReplyMessageService {
@@ -33,6 +29,9 @@ public class ReplyMessageService {
                 .setText(text);
     }
 
+    /**
+     * Uses as answers to callback queries {@link org.telegram.telegrambots.meta.api.objects.CallbackQuery}.
+     */
     public AnswerCallbackQuery getPopUpAnswer(String callbackId, String text) {
         return new AnswerCallbackQuery()
                 .setCallbackQueryId(callbackId)
@@ -40,6 +39,9 @@ public class ReplyMessageService {
                 .setShowAlert(false);
     }
 
+    /**
+     * Uses to hide keyboard {@link org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup}.
+     */
     public EditMessageText getEditedTextMessage(Long chatId, Integer messageId, String text) {
         return new EditMessageText()
                 .setChatId(chatId)
@@ -54,6 +56,9 @@ public class ReplyMessageService {
                 .setCaption(googlePlayGame.toString());
     }
 
+    /**
+     * Uses to send information about {@link GooglePlayGame} in JSON file.
+     */
     public SendDocument getMessageWithDocument(Long chatId, String document, InputStream inputStream) {
         return new SendDocument()
                 .setChatId(chatId)

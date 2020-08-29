@@ -1,10 +1,8 @@
 package ru.miroha.bot;
 
 /**
- * Helps to find out what condition the bot is in for each user. Also allows to set current condition for the bot.
- *
- * @author Pavel Mironov
- * @version 1.0
+ * Helps to find out what condition the bot is in for each user.
+ * Also allows to set current condition for the bot.
  */
 public interface UserBotCondition {
 

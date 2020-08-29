@@ -12,9 +12,6 @@ import static java.lang.Math.toIntExact;
 
 /**
  * Helps to build inline keyboard (menu) attached to the message.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 public class InlineKeyboardMarkupBuilder implements KeyboardMarkupBuilder {
 

@@ -16,9 +16,6 @@ import java.time.LocalDate;
 
 /**
  * Represents game from Google Play Store.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 @Document(collection = "googlePlayGames")
 @NoArgsConstructor

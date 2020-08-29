@@ -14,10 +14,7 @@ import ru.miroha.service.telegram.TelegramUpdateService;
 import java.io.Serializable;
 
 /**
- * Main {@link Update} handler.
- *
- * @author Pavel Mironov
- * @version 1.0
+ * Main {@link Update} handler. Defines the type of {@link Update} and passes it to other handlers.
  */
 @Slf4j
 @Component

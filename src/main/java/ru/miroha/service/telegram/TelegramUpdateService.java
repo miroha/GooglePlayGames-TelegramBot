@@ -7,18 +7,14 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.payments.ShippingQuery;
 
-
 import java.util.function.Function;
 
 /**
  * Provides various methods to shorten the code and avoid additional verifications every time when you want to know
- * what kind of {@link Update} came. It's just make it easier to work with Update.
+ * what kind of {@link Update} came. It's just make it easier to work with {@link Update}.
  *
  * <b>NOTE!</b>
  * <p>Supports {@link Message} and {@link CallbackQuery}. Don't use it for {@link ShippingQuery} or another exotic types of {@link Update}.</p>
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 @Service
 public class TelegramUpdateService implements TelegramUpdateExtractor {

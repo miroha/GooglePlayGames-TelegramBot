@@ -11,12 +11,9 @@ import ru.miroha.util.Emoji;
 import ru.miroha.service.telegram.ReplyMessageService;
 
 /**
- * Handles {@link Message} when {@link BotCondition} is {@code MAIN_MENU}.
+ * Handles {@link Message} when {@link BotCondition} is {@link BotCondition#MAIN_MENU}.
  *
  * Sends reply keyboard with main menu to interact.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 @Component
 public class StartMessageHandler implements MessageHandler {

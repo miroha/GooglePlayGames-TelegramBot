@@ -1,33 +1,32 @@
 package ru.miroha.service;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.stereotype.Service;
 import ru.miroha.model.GooglePlayGame;
 
 import java.io.IOException;
 
 /**
- * Allows to save {@link GooglePlayGame} to JSON.
- *
- * @author Pavel Mironov
- * @version 1.0
+ * Allows to serialize {@link GooglePlayGame} as a byte array.
+ * This byte array will be used to send JSON document to user without saving it to disk.
  */
 @Service
 public class JsonService {
 
-    public static ObjectMapper objectMapper = new ObjectMapper()
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-            .enable(SerializationFeature.INDENT_OUTPUT);
+    private final ObjectMapper objectMapper;
+
+    public JsonService(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     public byte [] toJson(GooglePlayGame googlePlayGame) throws IOException {
         return objectMapper.writeValueAsBytes(googlePlayGame);
     }
 
+    /**
+     * Generates unique JSON filename from {@link GooglePlayGame} package name.
+     * Example: com.happyvolcano.games.thealmostgone.json
+     */
     public String getFileName(GooglePlayGame googlePlayGame) {
         return googlePlayGame.getId() + ".json";
     }

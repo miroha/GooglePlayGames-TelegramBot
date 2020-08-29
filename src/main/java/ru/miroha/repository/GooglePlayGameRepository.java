@@ -12,9 +12,6 @@ import java.util.List;
  * Additional level of abstraction over data access.
  *
  * Stores {@link GooglePlayGame} objects to database and manages them.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 @Repository
 public interface GooglePlayGameRepository extends MongoRepository<GooglePlayGame, String> {

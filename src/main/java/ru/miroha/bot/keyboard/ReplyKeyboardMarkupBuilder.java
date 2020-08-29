@@ -9,9 +9,6 @@ import java.util.List;
 
 /**
  * Helps to build special keyboard with predefined reply options.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 public class ReplyKeyboardMarkupBuilder implements KeyboardMarkupBuilder {
 

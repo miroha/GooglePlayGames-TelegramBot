@@ -12,9 +12,6 @@ import java.util.List;
 
 /**
  * Redirects incoming {@link Message} to specific handlers depending on current bot condition.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 @Component
 public class BotConditionHandler {

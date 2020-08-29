@@ -18,9 +18,6 @@ import java.io.Serializable;
 
 /**
  * Receives incoming updates using long polling technology.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 @Slf4j
 @Component

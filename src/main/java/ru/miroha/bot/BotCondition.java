@@ -1,10 +1,7 @@
 package ru.miroha.bot;
 
 /**
- * Describes the possible conditions for the bot.
- *
- * @author Pavel Mironov
- * @version 1.0
+ * Describes possible conditions for the bot.
  */
 public enum BotCondition {
     MAIN_MENU,

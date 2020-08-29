@@ -19,13 +19,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Handles {@link Message} when {@link BotCondition} is {@code IN_LIBRARY}.
+ * Handles {@link Message} when {@link BotCondition} is {@link BotCondition#IN_LIBRARY}.
  *
  * Searches requested {@link GooglePlayGame} by title in the database.
  * If the game was found, returns inline keyboard that contains information about it.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 @Slf4j
 @Component

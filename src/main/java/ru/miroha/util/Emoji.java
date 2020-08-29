@@ -3,10 +3,7 @@ package ru.miroha.util;
 import com.vdurmont.emoji.EmojiParser;
 
 /**
- * Emoji library for interaction with user.
- *
- * @author Pavel Mironov
- * @version 1.0.
+ * Small emoji library for interaction with user.
  */
 public enum Emoji {
 

@@ -9,12 +9,9 @@ import ru.miroha.bot.BotCondition;
 import ru.miroha.service.telegram.ReplyMessageService;
 
 /**
- * Handles {@link Message} when {@link BotCondition} is {@code HELP}.
+ * Handles {@link Message} when {@link BotCondition} is {@link BotCondition#HELP}.
  *
  * Informs how the bot works.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 @Component
 public class HelpMessageHandler implements MessageHandler {

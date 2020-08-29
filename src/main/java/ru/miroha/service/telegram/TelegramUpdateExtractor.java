@@ -4,9 +4,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 /**
  * Retrieves information from complex {@link org.telegram.telegrambots.meta.api.objects.Update} object by merging existing methods.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 public interface TelegramUpdateExtractor {
 

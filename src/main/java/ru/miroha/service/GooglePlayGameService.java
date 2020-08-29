@@ -9,9 +9,6 @@ import java.util.List;
 
 /**
  * This is a layer to interact with repository {@link GooglePlayGameRepository} layer.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 @Service
 public class GooglePlayGameService {

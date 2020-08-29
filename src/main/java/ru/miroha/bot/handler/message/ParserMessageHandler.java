@@ -22,11 +22,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * Handles {@link Message} when {@link BotCondition} is {@code REQUEST_BY_URL}.
+ * Handles {@link Message} when {@link BotCondition} is {@link BotCondition#REQUEST_BY_URL}.
  * Calls {@link GooglePlayGameParserService} to get information about the game from its URL.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 @Slf4j
 @Component

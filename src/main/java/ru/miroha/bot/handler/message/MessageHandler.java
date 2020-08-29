@@ -6,9 +6,6 @@ import ru.miroha.bot.BotCondition;
 
 /**
  * Handles incoming {@link Message} by current bot condition.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 public interface MessageHandler {
 

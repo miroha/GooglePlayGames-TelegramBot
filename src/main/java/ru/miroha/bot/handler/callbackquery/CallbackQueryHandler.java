@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import ru.miroha.model.GooglePlayGame;
@@ -17,9 +16,6 @@ import java.io.*;
 
 /**
  * Handles callback queries from a callback buttons in an inline keyboard.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 @Slf4j
 @Component
@@ -67,7 +63,7 @@ public class CallbackQueryHandler {
                 return replyMessageService.getMessageWithImage(chatId, game);
             case "/json":
                 try {
-                    InputStream inputStream = new ByteArrayInputStream(jsonService.toJson(game));
+                    InputStream inputStream = new ByteArrayInputStream(jsonService.toJson(game)); //<don't save to disk
                     String filename = jsonService.getFileName(game);
                     return replyMessageService.getMessageWithDocument(chatId, filename, inputStream);
                 } catch (IOException e) {

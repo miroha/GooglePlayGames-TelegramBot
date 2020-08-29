@@ -4,9 +4,6 @@ import org.jsoup.nodes.Document;
 
 /**
  * Collects game data from the Google Play store.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 public interface GameParser {
 

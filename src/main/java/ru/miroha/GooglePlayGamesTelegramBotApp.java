@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.telegram.telegrambots.ApiContextInitializer;
 
 /**
- * @author Pavel Mironov
- * @version 1.0
+ * Allows to register bot in spring context automatically and also use it as standard spring bean.
  */
 @SpringBootApplication
 public class GooglePlayGamesTelegramBotApp {

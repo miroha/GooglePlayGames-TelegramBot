@@ -14,9 +14,6 @@ import java.util.stream.Collectors;
 
 /**
  * Provides the connection to <a href="https://play.google.com/store/apps">Google Play</a>.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 @Component
 public final class GooglePlayConnection {
@@ -28,7 +25,7 @@ public final class GooglePlayConnection {
 
     /**
      * Tries to connect to provided URL.
-     * Uses localized version of URL that retrieves from {@link #getLocalized(Map, String, String)}.
+     * Uses localized version of URL from {@link #getLocalized(Map, String, String)}.
      * Also checks if URL applies to APPS category to prevent from parsing books/music/movies.
      */
     public Connection connect(String URL, String language, String country) throws InvalidGooglePlayGameUrlException, MalformedURLException, URISyntaxException {
@@ -57,6 +54,9 @@ public final class GooglePlayConnection {
         return uriBuilder.build().toURL();
     }
 
+    /**
+     * Returns query parameters.
+     */
     private Map<String, String> getParameters(String url) throws MalformedURLException {
         return Arrays.stream(new URL(url).getQuery().split("&"))
                 .map(s -> s.split("="))

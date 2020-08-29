@@ -20,9 +20,6 @@ import java.util.stream.Collectors;
  * Additional service for {@link GooglePlayGameParser}.
  *
  * Provides methods that allow to fill all parsed information about requested game into one {@link GooglePlayGame} object.
- *
- * @author Pavel Mironov
- * @version 1.0
  */
 @Service
 public class GooglePlayGameParserService {
@@ -64,6 +61,9 @@ public class GooglePlayGameParserService {
         return googlePlayConnection.connect(URL, "ru", "RU").get();
     }
 
+    /**
+     * Returns {@link GooglePlayGame} package name (unique id) from {@link URL} query part.
+     */
     public String getGameId(String url) throws MalformedURLException {
         Map<String, String> params = Arrays.stream(new URL(url).getQuery().split("&"))
                 .map(s -> s.split("="))
