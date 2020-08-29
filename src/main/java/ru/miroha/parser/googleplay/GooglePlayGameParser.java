@@ -89,11 +89,8 @@ public class GooglePlayGameParser implements GameParser {
 
     @Override
     public String getRecentChanges(Document htmlDocument) {
-        Element container = htmlDocument.getElementsByAttributeValue("itemprop", "description")
-                .last()
-                .parent()
-                .select("span")
-                .first();
+        Elements elementsByAttributeValue = htmlDocument.getElementsByAttributeValue("itemprop", "description");
+        Element container = elementsByAttributeValue.last().parent().select("span").first();
         container.select("br").append("\\n");
         container.select("p").prepend("\\n\\n");
         String recentChanges = container.html().replaceAll("\\\\n", "\n");

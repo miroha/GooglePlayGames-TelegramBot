@@ -1,5 +1,6 @@
 package ru.miroha.service;
 
+import org.jsoup.Connection;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
 import ru.miroha.model.GooglePlayGame;
@@ -58,7 +59,8 @@ public class GooglePlayGameParserService {
     }
 
     public Document getHtmlDocument(String URL) throws InvalidGooglePlayGameUrlException, IOException, URISyntaxException {
-        return googlePlayConnection.connect(URL, "ru", "RU").get();
+        Connection connection = googlePlayConnection.connect(URL, "ru", "RU");
+        return connection.get();
     }
 
     /**

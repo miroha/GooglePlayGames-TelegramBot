@@ -23,46 +23,51 @@ import java.io.InputStream;
 public class ReplyMessageService {
 
     public SendMessage getTextMessage(Long chatId, String text) {
-        return new SendMessage()
-                .enableMarkdown(false)
-                .setChatId(chatId)
-                .setText(text);
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.enableMarkdown(false);
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(text);
+        return sendMessage;
     }
 
     /**
      * Uses as answers to callback queries {@link org.telegram.telegrambots.meta.api.objects.CallbackQuery}.
      */
     public AnswerCallbackQuery getPopUpAnswer(String callbackId, String text) {
-        return new AnswerCallbackQuery()
-                .setCallbackQueryId(callbackId)
-                .setText(text)
-                .setShowAlert(false);
+        AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
+        answerCallbackQuery.setCallbackQueryId(callbackId);
+        answerCallbackQuery.setText(text);
+        answerCallbackQuery.setShowAlert(false);
+        return answerCallbackQuery;
     }
 
     /**
      * Uses to hide keyboard {@link org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup}.
      */
     public EditMessageText getEditedTextMessage(Long chatId, Integer messageId, String text) {
-        return new EditMessageText()
-                .setChatId(chatId)
-                .setMessageId(messageId)
-                .setText(text);
+        EditMessageText editMessageText = new EditMessageText();
+        editMessageText.setChatId(chatId);
+        editMessageText.setMessageId(messageId);
+        editMessageText.setText(text);
+        return editMessageText;
     }
 
     public SendPhoto getMessageWithImage(Long chatId, GooglePlayGame googlePlayGame) {
-        return new SendPhoto()
-                .setChatId(chatId)
-                .setPhoto(googlePlayGame.getImage())
-                .setCaption(googlePlayGame.toString());
+        SendPhoto sendPhoto = new SendPhoto();
+        sendPhoto.setChatId(chatId);
+        sendPhoto.setPhoto(googlePlayGame.getImage());
+        sendPhoto.setCaption(googlePlayGame.toString());
+        return sendPhoto;
     }
 
     /**
      * Uses to send information about {@link GooglePlayGame} in JSON file.
      */
     public SendDocument getMessageWithDocument(Long chatId, String document, InputStream inputStream) {
-        return new SendDocument()
-                .setChatId(chatId)
-                .setDocument(document, inputStream);
+        SendDocument sendDocument = new SendDocument();
+        sendDocument.setChatId(chatId);
+        sendDocument.setDocument(document, inputStream);
+        return sendDocument;
     }
 
 }

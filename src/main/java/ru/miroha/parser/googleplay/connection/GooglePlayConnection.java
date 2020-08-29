@@ -47,10 +47,10 @@ public final class GooglePlayConnection {
      * Gets localized version of provided URL.
      */
     private URL getLocalized(Map<String, String> params, String language, String country) throws MalformedURLException, URISyntaxException {
-        URIBuilder uriBuilder = new URIBuilder(BASE_URL)
-                .addParameter("id", params.get("id"))
-                .addParameter("hl", language)
-                .addParameter("gl", country);
+        URIBuilder uriBuilder = new URIBuilder(BASE_URL);
+        uriBuilder.addParameter("id", params.get("id"));
+        uriBuilder.addParameter("hl", language);
+        uriBuilder.addParameter("gl", country);
         return uriBuilder.build().toURL();
     }
 
