@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -44,9 +45,16 @@ public final class GooglePlayConnection {
     }
 
     /**
+     * Uses default user language settings to set URL parameters automatically.
+     */
+    public Connection connect(String URL) throws InvalidGooglePlayGameUrlException, MalformedURLException, URISyntaxException {
+        return connect(URL, Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
+    }
+
+    /**
      * Gets localized version of provided URL.
      */
-    private URL getLocalized(Map<String, String> params, String language, String country) throws MalformedURLException, URISyntaxException {
+    public URL getLocalized(Map<String, String> params, String language, String country) throws MalformedURLException, URISyntaxException {
         URIBuilder uriBuilder = new URIBuilder(BASE_URL);
         uriBuilder.addParameter("id", params.get("id"));
         uriBuilder.addParameter("hl", language);
@@ -57,7 +65,7 @@ public final class GooglePlayConnection {
     /**
      * Returns query parameters.
      */
-    private Map<String, String> getParameters(String url) throws MalformedURLException {
+    public Map<String, String> getParameters(String url) throws MalformedURLException {
         return Arrays.stream(new URL(url).getQuery().split("&"))
                 .map(s -> s.split("="))
                 .collect(Collectors.toMap(k -> k[0], v -> v.length > 1 ? v[1] : ""));
