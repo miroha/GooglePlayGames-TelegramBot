@@ -13,7 +13,7 @@ import ru.miroha.service.telegram.ReplyMessageService;
 /**
  * Handles {@link Message} when {@link BotCondition} is {@link BotCondition#MAIN_MENU}.
  *
- * Sends reply keyboard with main menu to interact.
+ * Sends reply keyboard with main menu to interact with it.
  */
 @Component
 public class StartMessageHandler implements MessageHandler {
@@ -31,12 +31,9 @@ public class StartMessageHandler implements MessageHandler {
 
     @Override
     public SendMessage handle(Message message) {
-        if (message.getText().equals("/start")) {
-            return getMainMenu(message.getChatId());
-        }
-        else {
-            return replyMessageService.getTextMessage(message.getChatId(), "Такой команды я не знаю " + Emoji.EYES);
-        }
+        return message.getText().equals("/start")
+                ? getMainMenu(message.getChatId())
+                : replyMessageService.getTextMessage(message.getChatId(), "Такой команды я не знаю " + Emoji.EYES);
     }
 
     private SendMessage getMainMenu(Long chatId) {

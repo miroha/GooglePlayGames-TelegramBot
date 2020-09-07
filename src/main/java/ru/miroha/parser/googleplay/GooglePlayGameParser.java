@@ -1,5 +1,6 @@
 package ru.miroha.parser.googleplay;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -11,9 +12,11 @@ import org.springframework.stereotype.Component;
 import ru.miroha.parser.GameParser;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * This simple parser can be used to find and extract data from <a href="https://play.google.com/store/apps/category/GAME">Google Play Games</a>
@@ -144,7 +147,19 @@ public class GooglePlayGameParser implements GameParser {
     }
 
     /**
-    Retrieves the required element that is in meta tags.
+     * Extracts screenshots in .webp format.
+     */
+    public List<String> getScreenshots(Document htmlDocument) {
+        return htmlDocument.select("img[src]").stream()
+                .filter(img -> img.attr("alt").equals("Скрнишот"))
+                .map(element -> StringUtils.isNotEmpty(element.absUrl("srcset"))
+                        ? StringUtils.substringBefore(element.absUrl("srcset"), " ")
+                        : StringUtils.substringBefore(element.absUrl("data-srcset"), " "))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Retrieves the required element that is in meta tags.
      */
     private String parseByMetaTag(String pattern, String attribute, Document htmlDocument) {
         return htmlDocument.getElementsByTag("meta").stream()
@@ -155,7 +170,7 @@ public class GooglePlayGameParser implements GameParser {
     }
 
     /**
-    Retrieves the element by attribute if exists.
+     * Retrieves the element by attribute if exists.
      */
     private String getIfAttributePresent(String pattern, Document htmlDocument) {
         return isAttributePresent(pattern, htmlDocument)
@@ -173,10 +188,11 @@ public class GooglePlayGameParser implements GameParser {
     }
 
     /**
-    Checks if the required attribute exists (to prevent possible NPE) before extracting it.
+     * Checks if the required attribute exists (to prevent possible NPE) before extracting it.
+     * Variant with {@link java.util.Optional} works in the wrong way.
      */
     private boolean isAttributePresent(String pattern, Document htmlDocument) {
-        return !(htmlDocument.select(pattern).text().isEmpty());
+        return !(htmlDocument.select(pattern).isEmpty());
     }
 
 }

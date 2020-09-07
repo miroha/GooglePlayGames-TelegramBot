@@ -13,7 +13,7 @@ import ru.miroha.model.GooglePlayGame;
 import ru.miroha.service.GooglePlayGameService;
 import ru.miroha.util.Emoji;
 import ru.miroha.service.telegram.ReplyMessageService;
-import ru.miroha.bot.handler.callbackquery.CallbackQueryHandler;
+import ru.miroha.bot.handler.callbackquery.GooglePlayGameQueryHandler;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,28 +50,26 @@ public class LibraryMessageHandler implements MessageHandler {
             return replyMessageService.getTextMessage(chatId, defaultReply());
         }
         String title = message.getText();
-        List<GooglePlayGame> googlePlayGames = googlePlayGameService.findByTitle(title);
+        List<GooglePlayGame> googlePlayGames = googlePlayGameService.findListOfGamesByTitle(title);
 
         if (googlePlayGames.size() > 1) {   //<if more than one game with similar title was found
             return replyMessageService.getTextMessage(chatId, updateRequest(googlePlayGames));
         }
-        else if (googlePlayGames.size() == 1) {   //<BINGO
-            return getInlineKeyboard(chatId, googlePlayGames.get(0));
-        }
-        else {
+        if (googlePlayGames.isEmpty()){
             log.error("Game {} doesn't exist in library", title);
             return replyMessageService.getTextMessage(chatId, "Такой игры в библиотеке нет!");
         }
+        return getGameInformationMenu(chatId, googlePlayGames.get(0));
     }
 
     /**
      * User must clarify his request.
      */
     private String updateRequest(List<GooglePlayGame> games) {
-        return String.join("\n\n"
-                , "Найденные совпадения:"
-                , getSimilarTitles(games)
-                , "Уточните ваш запрос!");
+        return String.join("\n\n",
+                "Найденные совпадения:",
+                getSimilarTitles(games),
+                "Уточните ваш запрос!");
     }
 
     /**
@@ -84,9 +82,9 @@ public class LibraryMessageHandler implements MessageHandler {
     }
 
     /**
-     * Returns inline keyboard with buttons that create callback queries to be processed by {@link CallbackQueryHandler}
+     * Returns inline keyboard with buttons that create callback queries to be processed by {@link GooglePlayGameQueryHandler}
      */
-    private SendMessage getInlineKeyboard(Long chatId, GooglePlayGame googlePlayGame) {
+    private SendMessage getGameInformationMenu(Long chatId, GooglePlayGame googlePlayGame) {
         String gameTitle = googlePlayGame.getTitle();
         String URL = googlePlayGame.getUrl();
         return InlineKeyboardMarkupBuilder.create(chatId)
@@ -111,17 +109,17 @@ public class LibraryMessageHandler implements MessageHandler {
                 .buttonWithURL("Перейти в Google Play " + Emoji.URL, URL)
                 .endRow()
                 .row()
-                .button("Скрыть клавиатуру", "/close")
+                .button("Скрыть клавиатуру", "/close " + gameTitle)
                 .endRow()
                 .build();
     }
 
     private String defaultReply() {
-        return String.join("\n\n"
-                , "Введите название игры, например: LIMBO"
-                , "Количество игр в библиотеке: " + googlePlayGameService.getLibrarySize()
-                , "Случайные игры из библиотеки:"
-                , getRandomGameTitles());
+        return String.join("\n\n",
+                "Введите название игры, например: LIMBO",
+                "Количество игр в библиотеке: " + googlePlayGameService.getLibrarySize(),
+                "Случайные игры из библиотеки:",
+                getRandomGameTitles());
     }
 
     private String getRandomGameTitles() {

@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import ru.miroha.model.GooglePlayGame;
 import ru.miroha.repository.GooglePlayGameRepository;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This is a layer to interact with repository {@link GooglePlayGameRepository} layer.
@@ -19,16 +21,22 @@ public class GooglePlayGameService {
         this.googlePlayGameRepository = googlePlayGameRepository;
     }
 
-    public void save(GooglePlayGame googlePlayGame) {
+    public void saveToLibrary(GooglePlayGame googlePlayGame) {
         googlePlayGameRepository.save(googlePlayGame);
     }
 
-    public GooglePlayGame getGameByTitle(String title) {
-        return googlePlayGameRepository.findByTitle(title);
+    public GooglePlayGame getGameByTitle(String title) throws NoSuchGooglePlayGameFoundException {
+        Optional<GooglePlayGame> googlePlayGame = googlePlayGameRepository.findByTitle(title);
+        return googlePlayGame.orElseThrow(
+                () -> new NoSuchGooglePlayGameFoundException("Game was not found: " + title)
+        );
     }
 
-    public List<GooglePlayGame> findByTitle(String title) {
-        return googlePlayGameRepository.findByTitleContainsIgnoreCase(title);
+    public List<GooglePlayGame> findListOfGamesByTitle(String title) {
+        List<GooglePlayGame> googlePlayGames = googlePlayGameRepository.findByTitleContainsIgnoreCase(title);
+        return googlePlayGames.isEmpty()
+                ? Collections.emptyList()
+                : googlePlayGames;
     }
 
     public Long getLibrarySize() {

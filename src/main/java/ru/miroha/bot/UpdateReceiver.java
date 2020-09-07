@@ -4,12 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import ru.miroha.bot.handler.BotConditionHandler;
-import ru.miroha.bot.handler.callbackquery.CallbackQueryHandler;
+import ru.miroha.bot.handler.callbackquery.GooglePlayGameQueryHandler;
 import ru.miroha.service.telegram.ReplyMessageService;
-import ru.miroha.service.telegram.TelegramUpdateService;
 
 import java.io.Serializable;
 
@@ -22,75 +23,73 @@ public class UpdateReceiver {
 
     private final BotConditionHandler botConditionHandler;
 
-    private final CallbackQueryHandler callbackQueryHandler;
+    private final GooglePlayGameQueryHandler callbackQueryHandler;
 
-    private final BotConditionContext botConditionContext;
+    private final BotConditionUserContext botConditionUserContext;
 
     private final ReplyMessageService replyMessageService;
 
-    private final TelegramUpdateService updateService;
-
     public UpdateReceiver(BotConditionHandler botConditionHandler,
-                          CallbackQueryHandler callbackQueryHandler,
-                          BotConditionContext botConditionContext,
-                          ReplyMessageService replyMessageService,
-                          TelegramUpdateService updateService) {
+                          GooglePlayGameQueryHandler callbackQueryHandler,
+                          BotConditionUserContext botConditionUserContext,
+                          ReplyMessageService replyMessageService) {
         this.botConditionHandler = botConditionHandler;
         this.callbackQueryHandler = callbackQueryHandler;
-        this.botConditionContext = botConditionContext;
+        this.botConditionUserContext = botConditionUserContext;
         this.replyMessageService = replyMessageService;
-        this.updateService = updateService;
     }
 
     /**
      * Distributes incoming {@link Update} by its type and returns prepared response to user from specific handlers to main executable method.
      */
     public PartialBotApiMethod<? extends Serializable> handleUpdate(Update update) {
-        if (updateService.hasTextMessage(update)) {
-            BotCondition botCondition = getBotCondition(update);
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            Message message = update.getMessage();
+            BotCondition botCondition = getBotCondition(message);
             log.info(
                     "Message from: {}; " +
                     "chat id: {};  " +
                     "text: {}; " +
                     "bot condition: {}",
-                    updateService.getUserName(update),
-                    updateService.getChatId(update),
-                    updateService.getInputUserData(update),
+                    message.getFrom().getUserName(),
+                    message.getChatId(),
+                    message.getText(),
                     botCondition
             );
 
-            return botConditionHandler.handleTextMessageByCondition(update.getMessage(), botCondition);
+            return botConditionHandler.handleTextMessageByCondition(message, botCondition);
         }
-        else if (updateService.hasCallbackQuery(update)) {
+        else if (update.hasCallbackQuery()) {
+            CallbackQuery callbackQuery = update.getCallbackQuery();
             log.info(
                     "CallbackQuery from: {}; " +
                     "data: {}; " +
                     "message id: {}",
-                    updateService.getUserName(update),
-                    updateService.getInputUserData(update),
-                    updateService.getMessageId(update)
+                    callbackQuery.getFrom().getUserName(),
+                    callbackQuery.getData(),
+                    callbackQuery.getId()
             );
 
-            return callbackQueryHandler.handleCallbackQuery(update.getCallbackQuery());
+            return callbackQueryHandler.handleCallbackQuery(callbackQuery);
         }
         else {
             log.error(
                     "Unsupported request from: {}; " +
-                    "Message type: {}",
-                    updateService.getUserName(update),
-                    updateService.getMessageType(update.getMessage())
+                    "chatId: {}",
+                    update.getMessage().getFrom().getUserName(),
+                    update.getMessage().getChatId()
             );
 
-            return replyMessageService.getTextMessage(updateService.getChatId(update), "Я могу принимать только текстовые сообщения!");
+            return replyMessageService.getTextMessage(update.getMessage().getChatId(), "Я могу принимать только текстовые сообщения!");
         }
     }
 
     /**
      * Defines current bot condition by user message to handle updates further in specific handlers.
      */
-    private BotCondition getBotCondition(Update update) {
-        Integer userId = updateService.getUserId(update);
-        String userTextMessage = updateService.getInputUserData(update);
+    private BotCondition getBotCondition(Message message) {
+        Integer userId = message.getFrom().getId();
+        String userTextMessage = message.getText();
         BotCondition botCondition;
 
         switch (userTextMessage) {
@@ -107,9 +106,9 @@ public class UpdateReceiver {
                 botCondition = BotCondition.IN_LIBRARY;
                 break;
             default:
-                botCondition = botConditionContext.getCurrentBotConditionForUserById(userId);
+                botCondition = botConditionUserContext.getCurrentBotConditionForUserById(userId);
         }
-        botConditionContext.setCurrentBotConditionForUserWithId(userId, botCondition);
+        botConditionUserContext.setCurrentBotConditionForUserWithId(userId, botCondition);
         return botCondition;
     }
 

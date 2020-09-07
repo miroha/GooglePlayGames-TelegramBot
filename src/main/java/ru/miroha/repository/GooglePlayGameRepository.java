@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import ru.miroha.model.GooglePlayGame;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Additional level of abstraction over data access.
@@ -16,7 +17,7 @@ import java.util.List;
 @Repository
 public interface GooglePlayGameRepository extends MongoRepository<GooglePlayGame, String> {
 
-    GooglePlayGame findByTitle(String title);
+    Optional<GooglePlayGame> findByTitle(String title);
 
     List<GooglePlayGame> findByTitleContainsIgnoreCase(String title);
 

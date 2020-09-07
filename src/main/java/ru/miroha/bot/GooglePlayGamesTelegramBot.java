@@ -51,7 +51,16 @@ public class GooglePlayGamesTelegramBot extends TelegramLongPollingBot {
             }
         }
 
-        else if (responseToUser instanceof BotApiMethod) {
+        if (responseToUser instanceof SendPhoto) {
+            try {
+                execute(
+                        (SendPhoto) responseToUser);
+            } catch (TelegramApiException e) {
+                log.error("Error occurred while sending message to user: {}", e.getMessage());
+            }
+        }
+
+        if (responseToUser instanceof BotApiMethod) {
             try {
                 execute(
                         (BotApiMethod<? extends Serializable>) responseToUser);
@@ -60,14 +69,6 @@ public class GooglePlayGamesTelegramBot extends TelegramLongPollingBot {
             }
         }
 
-        else if (responseToUser instanceof SendPhoto) {
-            try {
-                execute(
-                        (SendPhoto) responseToUser);
-            } catch (TelegramApiException e) {
-                log.error("Error occurred while sending message to user: {}", e.getMessage());
-            }
-        }
     }
 
 }

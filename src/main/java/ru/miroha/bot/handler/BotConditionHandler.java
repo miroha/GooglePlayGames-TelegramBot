@@ -33,7 +33,7 @@ public class BotConditionHandler {
         MessageHandler messageHandler;
         try {
              messageHandler = messageHandlers.stream()
-                    .filter(p -> p.canHandle(botCondition))
+                    .filter(m -> m.canHandle(botCondition))
                     .findAny()
                     .orElseThrow(NoHandlerFoundException::new);
         } catch (NoHandlerFoundException e) {

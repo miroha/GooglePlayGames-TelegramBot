@@ -13,8 +13,8 @@ public interface TelegramUpdateExtractor {
 
     Integer getUserId(Update update);
 
-    String getInputUserData(Update update);
-
     Integer getMessageId(Update update);
+
+    String getUserLanguage(Update update);
 
 }

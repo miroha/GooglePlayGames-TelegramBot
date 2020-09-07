@@ -2,7 +2,9 @@ package ru.miroha.service;
 
 import org.jsoup.Connection;
 import org.jsoup.nodes.Document;
+
 import org.springframework.stereotype.Service;
+
 import ru.miroha.model.GooglePlayGame;
 import ru.miroha.parser.googleplay.GooglePlayGameParser;
 import ru.miroha.parser.googleplay.connection.GooglePlayConnection;
@@ -34,8 +36,8 @@ public class GooglePlayGameParserService {
         this.googlePlayConnection = googlePlayConnection;
     }
 
-    public GooglePlayGame getGameByUrl(String URL) throws InvalidGooglePlayGameUrlException, IOException, URISyntaxException {
-        Document htmlDocument = getHtmlDocument(URL);
+    public GooglePlayGame getGameByUrl(String URL, String language, String country) throws InvalidGooglePlayGameUrlException, IOException, URISyntaxException {
+        Document htmlDocument = getHtmlDocument(URL, language, country);
         return GooglePlayGame.builder()
                 .id(getGameId(URL))
                 .title(parser.getTitle(htmlDocument))
@@ -58,13 +60,13 @@ public class GooglePlayGameParserService {
                 .build();
     }
 
-    public Document getHtmlDocument(String URL) throws InvalidGooglePlayGameUrlException, IOException, URISyntaxException {
-        Connection connection = googlePlayConnection.connect(URL, "ru", "RU");
+    public Document getHtmlDocument(String URL, String language, String country) throws InvalidGooglePlayGameUrlException, IOException, URISyntaxException {
+        Connection connection = googlePlayConnection.connect(URL, language, country);
         return connection.get();
     }
 
     /**
-     * Returns {@link GooglePlayGame} package name (unique id) from {@link URL} query part.
+     * Extracts {@link GooglePlayGame} package name (unique id) from {@link URL} query part.
      */
     public String getGameId(String url) throws MalformedURLException {
         Map<String, String> params = Arrays.stream(new URL(url).getQuery().split("&"))

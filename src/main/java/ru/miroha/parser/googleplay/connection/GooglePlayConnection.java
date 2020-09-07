@@ -87,21 +87,17 @@ public final class GooglePlayConnection {
         }
 
         private static boolean isProtocolValid(URL url) {
-            if (url.getProtocol() != null) {
-                return url.getProtocol().equals(VALID_PROTOCOL);
-            }
-            else {
+            if (url.getProtocol() == null) {
                 return false;
             }
+            return url.getProtocol().equals(VALID_PROTOCOL);
         }
 
         private static boolean isHostValid(URL url) {
-            if (url.getHost() != null) {
-                return url.getHost().equals(VALID_HOST);
-            }
-            else {
+            if (url.getHost() == null) {
                 return false;
             }
+            return url.getHost().equals(VALID_HOST);
         }
 
         private static boolean isPortValid(URL url) {

@@ -14,13 +14,13 @@ import java.util.function.Function;
  * what kind of {@link Update} came. It's just make it easier to work with {@link Update}.
  *
  * <b>NOTE!</b>
- * <p>Supports {@link Message} and {@link CallbackQuery}. Don't use it for {@link ShippingQuery} or another exotic types of {@link Update}.</p>
+ * <p>Supports only {@link Message} and {@link CallbackQuery}. Don't use it for {@link ShippingQuery} or another exotic types of {@link Update}.</p>
  */
 @Service
 public class TelegramUpdateService implements TelegramUpdateExtractor {
 
     public boolean hasTextMessage(Update update) {
-        return (update.hasMessage() && update.getMessage().hasText());
+        return (update.hasMessage());
     }
 
     public boolean hasCallbackQuery(Update update) {
@@ -37,7 +37,7 @@ public class TelegramUpdateService implements TelegramUpdateExtractor {
             return callbackQueryFunc.apply(update.getCallbackQuery());
         }
         else {
-            return messageFunc.apply(update.getMessage());
+            throw new IllegalArgumentException("Invalid Update type");
         }
     }
 
@@ -60,20 +60,20 @@ public class TelegramUpdateService implements TelegramUpdateExtractor {
     }
 
     @Override
+    public String getUserLanguage(Update update) {
+        return getUpdateAttribute(
+                update,
+                message -> message.getFrom().getLanguageCode(),
+                callbackQuery -> callbackQuery.getFrom().getLanguageCode()
+        );
+    }
+
+    @Override
     public Integer getUserId(Update update) {
         return getUpdateAttribute(
                 update,
                 message -> message.getFrom().getId(),
                 callbackQuery -> callbackQuery.getFrom().getId()
-        );
-    }
-
-    @Override
-    public String getInputUserData(Update update) {
-        return getUpdateAttribute(
-                update,
-                Message::getText,
-                CallbackQuery::getData
         );
     }
 
@@ -84,34 +84,6 @@ public class TelegramUpdateService implements TelegramUpdateExtractor {
                 Message::getMessageId,
                 callbackQuery -> callbackQuery.getMessage().getMessageId()
         );
-    }
-
-    public String getMessageType(Message message) {
-        if (message.hasAudio()) {
-            return "Audio";
-        }
-        else if (message.hasVoice()) {
-            return "Voice";
-        }
-        else if (message.hasPhoto()) {
-            return "Photo";
-        }
-        else if (message.hasLocation()) {
-            return "Location";
-        }
-        else if (message.hasSticker()) {
-            return "Sticker";
-        }
-        else if (message.hasVideo()) {
-            return "Video";
-        }
-        else if (message.hasDocument()) {
-            return "Document";
-        }
-        else if (message.hasAnimation()) {
-            return "Animation";
-        }
-        else return "Unknown type";
     }
 
 }

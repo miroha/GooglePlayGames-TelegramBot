@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Implementation of {@link UserBotCondition} that saves and extracts bot conditions to/from {@link HashMap}.
+ * Implementation of {@link BotConditionObserved} that saves and extracts bot conditions to/from {@link HashMap}.
  */
 @Component
-public class BotConditionContext implements UserBotCondition {
+public class BotConditionUserContext implements BotConditionObserved {
 
     private final Map<Integer, BotCondition> usersBotCondition = new HashMap<>();
 

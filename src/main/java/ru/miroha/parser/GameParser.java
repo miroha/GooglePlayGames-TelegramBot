@@ -3,7 +3,7 @@ package ru.miroha.parser;
 import org.jsoup.nodes.Document;
 
 /**
- * Collects game data from the Google Play store.
+ * Collects game data.
  */
 public interface GameParser {
 

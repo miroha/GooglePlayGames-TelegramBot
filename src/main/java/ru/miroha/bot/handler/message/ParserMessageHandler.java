@@ -52,7 +52,7 @@ public class ParserMessageHandler implements MessageHandler {
         String URL = message.getText();
         GooglePlayGame googlePlayGame;
         try {
-            googlePlayGame = parserService.getGameByUrl(URL);
+            googlePlayGame = parserService.getGameByUrl(URL, "ru", "RU");
             if (!isGenreValid(googlePlayGame)) {
                 throw new InvalidGooglePlayGameUrlException();
             }
@@ -66,7 +66,7 @@ public class ParserMessageHandler implements MessageHandler {
             log.error("Invalid URL: {}", URL);
             return replyMessageService.getTextMessage(chatId, "Некорректный URL-адрес, попробуйте снова.");
         }
-        googlePlayGameService.save(googlePlayGame);
+        googlePlayGameService.saveToLibrary(googlePlayGame);
         log.info("Game {} saved to library", googlePlayGame.getTitle());
         return replyMessageService.getTextMessage(chatId, googlePlayGame.toString());
     }
