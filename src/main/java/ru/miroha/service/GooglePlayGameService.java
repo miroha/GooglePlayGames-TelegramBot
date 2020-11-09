@@ -32,6 +32,10 @@ public class GooglePlayGameService {
         );
     }
 
+    public List<GooglePlayGame> getAllLibrary() {
+        return googlePlayGameRepository.findAll();
+    }
+
     public List<GooglePlayGame> findListOfGamesByTitle(String title) {
         List<GooglePlayGame> googlePlayGames = googlePlayGameRepository.findByTitleContainsIgnoreCase(title);
         return googlePlayGames.isEmpty()
