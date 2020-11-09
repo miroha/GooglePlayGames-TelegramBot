@@ -1,0 +1,9 @@
+bot:
+  username: ${BOT_USERNAME}
+  token: ${BOT_TOKEN}
+server:
+  port: ${SERVER_PORT}
+spring:
+  data:
+    mongodb:
+      database: mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@telegram-bot.8dx8c.mongodb.net/${DB_NAME}?retryWrites=true&w=majority
