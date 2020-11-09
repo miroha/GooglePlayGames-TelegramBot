@@ -1,6 +1,9 @@
 bot:
   username: ${BOT_USERNAME}
   token: ${BOT_TOKEN}
+  schedule:
+    cron:
+      update: 0 0 1 * * *
 server:
   port: ${SERVER_PORT}
 spring:
