@@ -6,9 +6,9 @@ import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
 
 import ru.miroha.model.GooglePlayGame;
-import ru.miroha.parser.googleplay.GooglePlayGameParser;
-import ru.miroha.parser.googleplay.connection.GooglePlayConnection;
-import ru.miroha.parser.googleplay.connection.InvalidGooglePlayGameUrlException;
+import ru.miroha.service.parser.googleplay.GooglePlayGameParser;
+import ru.miroha.service.parser.googleplay.connection.GooglePlayConnection;
+import ru.miroha.service.parser.googleplay.connection.InvalidGooglePlayGameUrlException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

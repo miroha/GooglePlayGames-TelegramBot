@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.miroha.model.GooglePlayGame;
-import ru.miroha.parser.googleplay.connection.InvalidGooglePlayGameUrlException;
+import ru.miroha.service.parser.googleplay.connection.InvalidGooglePlayGameUrlException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
